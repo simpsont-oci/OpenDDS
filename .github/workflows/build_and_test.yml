@@ -32,29 +32,41 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
+    - name: Cache Artifact
+      id: cache-artifact
+      uses: actions/cache@v2
+      with:
+        path: ubuntu-20_04_defaults_ACE_TAO.tar.xz
+        key: ${{ github.job }}_ace6tao2
     - name: install xerces
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: sudo apt-get -y install libxerces-c-dev
     - name: checkout MPC
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: DOCGroup/MPC
         path: MPC
     - name: checkout OpenDDS
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         path: OpenDDS
         submodules: true
     - name: checkout ACE_TAO
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: DOCGroup/ACE_TAO
         ref: ace6tao2
         path: OpenDDS/ACE_TAO
     - name: configure OpenDDS
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: |
         cd OpenDDS
         ./configure --tests --security --ace=$GITHUB_WORKSPACE/OpenDDS/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC
     - name: build ACE and TAO
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: |
         cd OpenDDS
         . setenv.sh
@@ -63,6 +75,7 @@ jobs:
         cd ../TAO
         make -j4
     - name: create ACE_TAO tar.xz artifact
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       shell: bash
       run: |
         cd OpenDDS/ACE_TAO
@@ -304,29 +317,41 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
+    - name: Cache Artifact
+      id: cache-artifact
+      uses: actions/cache@v2
+      with:
+        path: ubuntu-18_04_defaults_ACE_TAO.tar.xz
+        key: ${{ github.job }}_ace6tao2
     - name: install xerces
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: sudo apt-get -y install libxerces-c-dev
     - name: checkout MPC
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: DOCGroup/MPC
         path: MPC
     - name: checkout OpenDDS
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         path: OpenDDS
         submodules: true
     - name: checkout ACE_TAO
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: actions/checkout@v2
       with:
         repository: DOCGroup/ACE_TAO
         ref: ace6tao2
         path: OpenDDS/ACE_TAO
     - name: configure OpenDDS
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: |
         cd OpenDDS
         ./configure --tests --security --ace=$GITHUB_WORKSPACE/OpenDDS/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC
     - name: build ACE and TAO
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: |
         cd OpenDDS
         . setenv.sh
@@ -335,6 +360,7 @@ jobs:
         cd ../TAO
         make -j4
     - name: create ACE_TAO tar.xz artifact
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
       shell: bash
       run: |
         cd OpenDDS/ACE_TAO
