@@ -38,7 +38,11 @@ if ($test->flag('frisco')) {
   $is_rtps_disc = 1;
 }
 if ($test->flag('crisco')) {
-  $tc_opts .= " ci_disco --json";
+  $tc_opts .= " ci_disco --override-start-time 15";
+  $is_rtps_disc = 1;
+}
+if ($test->flag('cisco')) {
+  $tc_opts .= " ci_disco --";
   $is_rtps_disc = 1;
 }
 elsif ($test->flag('fan')) {
