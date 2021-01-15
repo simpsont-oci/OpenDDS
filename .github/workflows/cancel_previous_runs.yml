@@ -15,4 +15,4 @@ jobs:
       with:
         cancelMode: allDuplicates
         token: ${{ secrets.GITHUB_TOKEN }}
-        sourceRunId: ${{ github.even.workflow_run.id }}
+        sourceRunId: ${{ github.event.workflow_run.id }}
