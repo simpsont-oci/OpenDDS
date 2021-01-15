@@ -16,7 +16,6 @@ on:
     branches:
       - master
       - branch-DDS-3.*
-      - gh_workflow*
     paths:
       - '**'
       - '!docs/**'
