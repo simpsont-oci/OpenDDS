@@ -38,7 +38,7 @@ jobs:
       - name: 'Setup'
         shell: bash
         run: |
-          unzip *.zip
+          ls -1 *.zip | xargs -I unzip -q -o {}
           export PR_SHA=$(cat */SHA | sort -u | head -n 1)
           echo "PR_SHA=$PR_SHA" >> $GITHUB_ENV
 

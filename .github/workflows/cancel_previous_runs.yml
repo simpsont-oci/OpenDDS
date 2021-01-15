@@ -1,7 +1,10 @@
 name: Cancel Previous Runs
+
 on:
-  schedule:
-    - cron: '*/15 * * * *'
+  workflow_run:
+    workflows: ["Build & Test"]
+    types:
+      - requested
 
 jobs:
   cancel-previous-runs:
