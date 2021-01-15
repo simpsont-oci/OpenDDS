@@ -37,6 +37,10 @@ if ($test->flag('flisco')) {
   $tc_opts .= " ci_disco --json";
   $is_rtps_disc = 1;
 }
+if ($test->flag('atisco')) {
+  $tc_opts .= " ci_disco bobcat";
+  $is_rtps_disc = 1;
+}
 if ($test->flag('grisco')) {
   $tc_opts .= " ci_disco";
   $is_rtps_disc = 1;
