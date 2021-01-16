@@ -140,6 +140,7 @@ jobs:
         . setenv.sh
         tools/scripts/show_build_config.pl
     - name: build OpenDDS
+      uses: ammaraskar/gcc-problem-matcher@0.1
       shell: bash
       run: |
         cd OpenDDS
@@ -237,6 +238,7 @@ jobs:
         . setenv.sh
         tools/scripts/show_build_config.pl
     - name: build OpenDDS
+      uses: ammaraskar/gcc-problem-matcher@0.1
       shell: bash
       run: |
         cd OpenDDS
@@ -425,6 +427,7 @@ jobs:
         . setenv.sh
         tools/scripts/show_build_config.pl
     - name: build OpenDDS
+      uses: ammaraskar/gcc-problem-matcher@0.1
       shell: bash
       run: |
         cd OpenDDS
@@ -522,6 +525,7 @@ jobs:
         . setenv.sh
         tools/scripts/show_build_config.pl
     - name: build OpenDDS
+      uses: ammaraskar/gcc-problem-matcher@0.1
       shell: bash
       run: |
         cd OpenDDS
@@ -710,6 +714,7 @@ jobs:
         . setenv.sh
         tools/scripts/show_build_config.pl
     - name: build OpenDDS
+      uses: ammaraskar/gcc-problem-matcher@0.1
       shell: bash
       run: |
         cd OpenDDS
@@ -807,6 +812,7 @@ jobs:
         . setenv.sh
         tools/scripts/show_build_config.pl
     - name: build OpenDDS
+      uses: ammaraskar/gcc-problem-matcher@0.1
       shell: bash
       run: |
         cd OpenDDS
@@ -999,6 +1005,8 @@ jobs:
         cd OpenDDS/ACE_TAO
         tar xvfJ windows-2019_defaults_ACE_TAO.tar.xz
         rm -f windows-2019_defaults_ACE_TAO.tar.xz
+    - name: set up dotnet
+      uses: actions/setup-dotnet@v1.7.2
     - name: set up msvc env
       uses: ilammy/msvc-dev-cmd@v1.5.0
     - name: configure OpenDDS
@@ -1111,6 +1119,8 @@ jobs:
         cd OpenDDS/ACE_TAO
         tar xvfJ windows-2019_defaults_ACE_TAO.tar.xz
         rm -f windows-2019_defaults_ACE_TAO.tar.xz
+    - name: set up dotnet
+      uses: actions/setup-dotnet@v1.7.2
     - name: set up msvc env
       uses: ilammy/msvc-dev-cmd@v1.5.0
     - name: configure OpenDDS
@@ -1297,6 +1307,8 @@ jobs:
         cd OpenDDS/ACE_TAO
         tar xvfJ windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
         rm -f windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
+    - name: set up dotnet
+      uses: actions/setup-dotnet@v1.7.2
     - name: set up msvc env
       uses: ilammy/msvc-dev-cmd@v1.5.0
     - name: configure OpenDDS
@@ -1409,6 +1421,8 @@ jobs:
         cd OpenDDS/ACE_TAO
         tar xvfJ windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
         rm -f windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
+    - name: set up dotnet
+      uses: actions/setup-dotnet@v1.7.2
     - name: set up msvc env
       uses: ilammy/msvc-dev-cmd@v1.5.0
     - name: configure OpenDDS
@@ -1593,6 +1607,7 @@ jobs:
 #        . setenv.sh
 #        tools/scripts/show_build_config.pl
 #    - name: build OpenDDS
+#      uses: ammaraskar/gcc-problem-matcher@0.1
 #      shell: bash
 #      run: |
 #        cd OpenDDS
@@ -1691,6 +1706,7 @@ jobs:
 #        . setenv.sh
 #        tools/scripts/show_build_config.pl
 #    - name: build OpenDDS
+#      uses: ammaraskar/gcc-problem-matcher@0.1
 #      shell: bash
 #      run: |
 #        cd OpenDDS
@@ -1881,6 +1897,7 @@ jobs:
         . setenv.sh
         tools/scripts/show_build_config.pl
     - name: build OpenDDS
+      uses: ammaraskar/gcc-problem-matcher@0.1
       shell: bash
       run: |
         cd OpenDDS
@@ -1979,6 +1996,7 @@ jobs:
         . setenv.sh
         tools/scripts/show_build_config.pl
     - name: build OpenDDS
+      uses: ammaraskar/gcc-problem-matcher@0.1
       shell: bash
       run: |
         cd OpenDDS
