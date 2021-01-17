@@ -32,12 +32,29 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: ace6tao2
+        path: OpenDDS/ACE_TAO
+    - name: get ACE_TAO commit
+        shell: bash
+        run: |
+          cd OpenDDS/ACE_TAO
+          export ACE_COMMIT=$(git rev-parse HEAD)
+          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
       with:
         path: ubuntu-20_04_defaults_ACE_TAO.tar.xz
-        key: ${{ github.job }}_ace6tao2
+        key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install xerces
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: sudo apt-get -y install libxerces-c-dev
@@ -47,19 +64,6 @@ jobs:
       with:
         repository: DOCGroup/MPC
         path: MPC
-    - name: checkout OpenDDS
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
-      uses: actions/checkout@v2.3.4
-      with:
-        path: OpenDDS
-        submodules: true
-    - name: checkout ACE_TAO
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
-      uses: actions/checkout@v2.3.4
-      with:
-        repository: DOCGroup/ACE_TAO
-        ref: ace6tao2
-        path: OpenDDS/ACE_TAO
     - name: configure OpenDDS
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: |
@@ -319,12 +323,29 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: ace6tao2
+        path: OpenDDS/ACE_TAO
+    - name: get ACE_TAO commit
+        shell: bash
+        run: |
+          cd OpenDDS/ACE_TAO
+          export ACE_COMMIT=$(git rev-parse HEAD)
+          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
       with:
         path: ubuntu-18_04_defaults_ACE_TAO.tar.xz
-        key: ${{ github.job }}_ace6tao2
+        key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install xerces
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: sudo apt-get -y install libxerces-c-dev
@@ -334,19 +355,6 @@ jobs:
       with:
         repository: DOCGroup/MPC
         path: MPC
-    - name: checkout OpenDDS
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
-      uses: actions/checkout@v2.3.4
-      with:
-        path: OpenDDS
-        submodules: true
-    - name: checkout ACE_TAO
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
-      uses: actions/checkout@v2.3.4
-      with:
-        repository: DOCGroup/ACE_TAO
-        ref: ace6tao2
-        path: OpenDDS/ACE_TAO
     - name: configure OpenDDS
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: |
@@ -606,12 +614,29 @@ jobs:
     runs-on: ubuntu-16.04
 
     steps:
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: ace6tao2
+        path: OpenDDS/ACE_TAO
+    - name: get ACE_TAO commit
+        shell: bash
+        run: |
+          cd OpenDDS/ACE_TAO
+          export ACE_COMMIT=$(git rev-parse HEAD)
+          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
       with:
         path: ubuntu-16_04_defaults_ACE_TAO.tar.xz
-        key: ${{ github.job }}_ace6tao2
+        key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install xerces
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: sudo apt-get -y install libxerces-c-dev
@@ -621,19 +646,6 @@ jobs:
       with:
         repository: DOCGroup/MPC
         path: MPC
-    - name: checkout OpenDDS
-      uses: actions/checkout@v2.3.4
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
-      with:
-        path: OpenDDS
-        submodules: true
-    - name: checkout ACE_TAO
-      uses: actions/checkout@v2.3.4
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
-      with:
-        repository: DOCGroup/ACE_TAO
-        ref: ace6tao2
-        path: OpenDDS/ACE_TAO
     - name: configure OpenDDS
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: |
@@ -893,12 +905,29 @@ jobs:
     runs-on: windows-2019
 
     steps:
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: ace6tao2
+        path: OpenDDS/ACE_TAO
+    - name: get ACE_TAO commit
+        shell: bash
+        run: |
+          cd OpenDDS/ACE_TAO
+          export ACE_COMMIT=$(git rev-parse HEAD)
+          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
       with:
         path: windows-2019_defaults_ACE_TAO.tar.xz
-        key: ${{ github.job }}_ace6tao2
+        key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install openssl-windows & xerces-c
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: lukka/run-vcpkg@v6
@@ -912,19 +941,6 @@ jobs:
       with:
         repository: DOCGroup/MPC
         path: MPC
-    - name: checkout OpenDDS
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
-      uses: actions/checkout@v2.3.4
-      with:
-        path: OpenDDS
-        submodules: true
-    - name: checkout ACE_TAO
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
-      uses: actions/checkout@v2.3.4
-      with:
-        repository: DOCGroup/ACE_TAO
-        ref: ace6tao2
-        path: OpenDDS/ACE_TAO
     - name: set up msvc env
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: ilammy/msvc-dev-cmd@v1.5.0
@@ -1005,8 +1021,7 @@ jobs:
         cd OpenDDS/ACE_TAO
         tar xvfJ windows-2019_defaults_ACE_TAO.tar.xz
         rm -f windows-2019_defaults_ACE_TAO.tar.xz
-    - name: set up dotnet
-      uses: actions/setup-dotnet@v1.7.2
+    - uses: ammaraskar/msvc-problem-matcher@0.1
     - name: set up msvc env
       uses: ilammy/msvc-dev-cmd@v1.5.0
     - name: configure OpenDDS
@@ -1119,8 +1134,7 @@ jobs:
         cd OpenDDS/ACE_TAO
         tar xvfJ windows-2019_defaults_ACE_TAO.tar.xz
         rm -f windows-2019_defaults_ACE_TAO.tar.xz
-    - name: set up dotnet
-      uses: actions/setup-dotnet@v1.7.2
+    - uses: ammaraskar/msvc-problem-matcher@0.1
     - name: set up msvc env
       uses: ilammy/msvc-dev-cmd@v1.5.0
     - name: configure OpenDDS
@@ -1195,12 +1209,29 @@ jobs:
     runs-on: windows-2016
 
     steps:
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: ace6tao2
+        path: OpenDDS/ACE_TAO
+    - name: get ACE_TAO commit
+        shell: bash
+        run: |
+          cd OpenDDS/ACE_TAO
+          export ACE_COMMIT=$(git rev-parse HEAD)
+          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
       with:
         path: windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
-        key: ${{ github.job }}_ace6tao2
+        key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install openssl-windows & xerces-c
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: lukka/run-vcpkg@v6
@@ -1214,19 +1245,6 @@ jobs:
       with:
         repository: DOCGroup/MPC
         path: MPC
-    - name: checkout OpenDDS
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
-      uses: actions/checkout@v2.3.4
-      with:
-        path: OpenDDS
-        submodules: true
-    - name: checkout ACE_TAO
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
-      uses: actions/checkout@v2.3.4
-      with:
-        repository: DOCGroup/ACE_TAO
-        ref: ace6tao2
-        path: OpenDDS/ACE_TAO
     - name: set up msvc env
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: ilammy/msvc-dev-cmd@v1.5.0
@@ -1307,8 +1325,7 @@ jobs:
         cd OpenDDS/ACE_TAO
         tar xvfJ windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
         rm -f windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
-    - name: set up dotnet
-      uses: actions/setup-dotnet@v1.7.2
+    - uses: ammaraskar/msvc-problem-matcher@0.1
     - name: set up msvc env
       uses: ilammy/msvc-dev-cmd@v1.5.0
     - name: configure OpenDDS
@@ -1421,8 +1438,7 @@ jobs:
         cd OpenDDS/ACE_TAO
         tar xvfJ windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
         rm -f windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
-    - name: set up dotnet
-      uses: actions/setup-dotnet@v1.7.2
+    - uses: ammaraskar/msvc-problem-matcher@0.1
     - name: set up msvc env
       uses: ilammy/msvc-dev-cmd@v1.5.0
     - name: configure OpenDDS
@@ -1492,307 +1508,34 @@ jobs:
 
   # macOS 11.0
 
-#  macos-11_0_defaults_artifact:
-#
-#    runs-on: macos-11.0
-#
-#    steps:
-#    - name: Cache Artifact
-#      id: cache-artifact
-#      uses: actions/cache@v2
-#      with:
-#        path: macos-11_0_defaults_ACE_TAO.tar.xz
-#        key: ${{ github.job }}_ace6tao2
-#    - name: install xerces-c
-#      if: steps.cache-artifact.outputs.cache-hit != 'true'
-#      run: |
-#        brew install xerces-c
-#    - name: checkout MPC
-#      if: steps.cache-artifact.outputs.cache-hit != 'true'
-#      uses: actions/checkout@v2.3.4
-#      with:
-#        repository: DOCGroup/MPC
-#        path: MPC
-#    - name: checkout OpenDDS
-#      if: steps.cache-artifact.outputs.cache-hit != 'true'
-#      uses: actions/checkout@v2.3.4
-#      with:
-#        path: OpenDDS
-#        submodules: true
-#    - name: checkout ACE_TAO
-#      if: steps.cache-artifact.outputs.cache-hit != 'true'
-#      uses: actions/checkout@v2.3.4
-#      with:
-#        repository: DOCGroup/ACE_TAO
-#        ref: 9eae9c11f1bcd07b48c74820d8cb4c67aca9ef23 # Update to 6_5_13 when available
-#        path: OpenDDS/ACE_TAO
-#    - name: configure OpenDDS
-#      if: steps.cache-artifact.outputs.cache-hit != 'true'
-#      run: |
-#        cd OpenDDS
-#        ./configure --std=c++11 --tests --security --ace=$GITHUB_WORKSPACE/OpenDDS/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC --xerces3=/usr/local/Cellar/xerces-c/3.2.3 --openssl=/usr/local/opt/openssl/
-#    - name: build ACE and TAO
-#      if: steps.cache-artifact.outputs.cache-hit != 'true'
-#      run: |
-#        cd OpenDDS
-#        . setenv.sh
-#        cd ACE_TAO/ACE
-#        make -j4
-#        cd ../TAO
-#        make -j4
-#    - name: create ACE_TAO tar.xz artifact
-#      if: steps.cache-artifact.outputs.cache-hit != 'true'
-#      shell: bash
-#      run: |
-#        cd OpenDDS/ACE_TAO
-#        perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
-#        tar cvf ../../macos-11_0_defaults_ACE_TAO.tar ACE/ace/config.h
-#        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../macos-11_0_defaults_ACE_TAO.tar
-#        xz ../../macos-11_0_defaults_ACE_TAO.tar
-#    - name: upload ACE_TAO artifact
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: macos-11_0_defaults_ace_artifact
-#        path: macos-11_0_defaults_ACE_TAO.tar.xz
-#
-#  macos-11_0_defaults_security:
-#
-#    runs-on: macos-11.0
-#
-#    needs: macos-11_0_defaults_artifact
-#
-#    steps:
-#    - name: install xerces-c
-#      run: |
-#        brew install xerces-c
-#    - name: checkout MPC
-#      uses: actions/checkout@v2.3.4
-#      with:
-#        repository: DOCGroup/MPC
-#        path: MPC
-#    - name: checkout autobuild
-#      uses: actions/checkout@v2.3.4
-#      with:
-#        repository: DOCGroup/autobuild
-#        path: autobuild
-#    - name: checkout ACE_TAO
-#      uses: actions/checkout@v2.3.4
-#      with:
-#        repository: DOCGroup/ACE_TAO
-#        ref: 9eae9c11f1bcd07b48c74820d8cb4c67aca9ef23 # Update to 6_5_13 when available
-#        path: ACE_TAO
-#    - name: download ACE_TAO artifact
-#      uses: actions/download-artifact@v2
-#      with:
-#        name: macos-11_0_defaults_ace_artifact
-#        path: ACE_TAO
-#    - name: extract ACE_TAO artifact
-#      shell: bash
-#      run: |
-#        cd ACE_TAO
-#        tar xvfJ macos-11_0_defaults_ACE_TAO.tar.xz
-#    - name: checkout OpenDDS
-#      uses: actions/checkout@v2.3.4
-#      with:
-#        path: OpenDDS
-#        submodules: true
-#    - name: configure OpenDDS
-#      run: |
-#        cd OpenDDS
-#        ./configure --std=c++11 --tests --rapidjson --security --ace=$GITHUB_WORKSPACE/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC --xerces3=/usr/local/Cellar/xerces-c/3.2.3 --openssl=/usr/local/opt/openssl/
-#    - name: check build configuration
-#      shell: bash
-#      run: |
-#        cd OpenDDS
-#        . setenv.sh
-#        tools/scripts/show_build_config.pl
-#    - uses: ammaraskar/gcc-problem-matcher@0.1
-#    - name: build OpenDDS
-#      shell: bash
-#      run: |
-#        cd OpenDDS
-#        . setenv.sh
-#        make -j4
-#    - name: run OpenDDS tests
-#      shell: bash
-#      run: |
-#        cd OpenDDS
-#        . setenv.sh
-#        mkdir workspace
-#        cd workspace
-#        echo $GITHUB_SHA > ./SHA
-#        cat > config.xml <<EOF
-#        <autobuild>
-#        <configuration>
-#        <variable name="log_file" value="output.log"/>
-#        <variable name="log_root" value="$DDS_ROOT/macos-11_0_defaults_security_autobuild_workspace"/>
-#        <variable name="project_root" value="$DDS_ROOT"/>
-#        <variable name="root" value="$DDS_ROOT/macos-11_0_defaults_security_autobuild_workspace"/>
-#        <variable name="junit_xml_output" value="Tests"/>
-#        </configuration>
-#        <command name="log" options="on"/>
-#        <command name="print_os_version"/>
-#        <command name="print_env_vars"/>
-#        <command name="print_ace_config"/>
-#        <command name="print_make_version"/>
-#        <command name="check_compiler" options="gcc"/>
-#        <command name="print_autobuild_config"/>
-#        <command name="auto_run_tests" options="dir=$GITHUB_WORKSPACE/OpenDDS -Config RTPS -Config OSX -Config XERCES3 -Config OPENDDS_SECURITY -Config CXX11 -Config RAPIDJSON -Config NO_SHMEM -Config DDS_NO_ORBSVCS -Config GH_ACTIONS -a -l tests/security/security_tests.lst"/>
-#        <command name="log" options="off"/>
-#        <command name="process_logs" options="prettify"/>
-#        </autobuild>
-#        EOF
-#        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_security_autobuild_workspace/config.xml"
-#    - name: upload autobuild output
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: macos-11_0_defaults_security_autobuild_output
-#        path: OpenDDS/macos-11_0_defaults_security_autobuild_workspace
-#    - name: check results
-#      shell: bash
-#      run: |
-#        cat "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_security_autobuild_workspace/latest.txt"
-#        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_security_autobuild_workspace/latest.txt"
-#
-#  macos-11_0_defaults_java_no-bit:
-#
-#    runs-on: macos-11.0
-#
-#    needs: macos-11_0_defaults_artifact
-#
-#    steps:
-#    - name: install xerces-c
-#      run: |
-#        brew install xerces-c
-#    - name: checkout MPC
-#      uses: actions/checkout@v2.3.4
-#      with:
-#        repository: DOCGroup/MPC
-#        path: MPC
-#    - name: checkout autobuild
-#      uses: actions/checkout@v2.3.4
-#      with:
-#        repository: DOCGroup/autobuild
-#        path: autobuild
-#    - name: checkout ACE_TAO
-#      uses: actions/checkout@v2.3.4
-#      with:
-#        repository: DOCGroup/ACE_TAO
-#        ref: 9eae9c11f1bcd07b48c74820d8cb4c67aca9ef23 # Update to 6_5_13 when available
-#        path: ACE_TAO
-#    - name: download ACE_TAO artifact
-#      uses: actions/download-artifact@v2
-#      with:
-#        name: macos-11_0_defaults_ace_artifact
-#        path: ACE_TAO
-#    - name: extract ACE_TAO artifact
-#      shell: bash
-#      run: |
-#        cd ACE_TAO
-#        tar xvfJ macos-11_0_defaults_ACE_TAO.tar.xz
-#    - name: checkout OpenDDS
-#      uses: actions/checkout@v2.3.4
-#      with:
-#        path: OpenDDS
-#        submodules: true
-#    - name: configure OpenDDS
-#      run: |
-#        cd OpenDDS
-#        ./configure --std=c++11 --tests --rapidjson --java --no-built-in-topics --ace=$GITHUB_WORKSPACE/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC
-#    - name: check build configuration
-#      shell: bash
-#      run: |
-#        cd OpenDDS
-#        . setenv.sh
-#        tools/scripts/show_build_config.pl
-#    - uses: ammaraskar/gcc-problem-matcher@0.1
-#    - name: build OpenDDS
-#      shell: bash
-#      run: |
-#        cd OpenDDS
-#        . setenv.sh
-#        make -j4
-#    - name: set up TAO Hello test
-#      shell: bash
-#      run: |
-#        cd OpenDDS
-#        . setenv.sh
-#        mwc.pl -type gnuace $TAO_ROOT/tests/Hello
-#    - name: build TAO Hello test
-#      shell: bash
-#      run: |
-#        cd OpenDDS
-#        . setenv.sh
-#        make -j2 dir=$TAO_ROOT/tests/Hello
-#    - name: set up Modeling tests
-#      shell: bash
-#      run: |
-#        cd OpenDDS
-#        . setenv.sh
-#        cd tools/modeling/tests
-#        ./setup.pl
-#        cd -
-#        mwc.pl -type gnuace -features built_in_topics=0 tools/modeling/tests/modeling_tests.mwc
-#    - name: build Modeling tests
-#      shell: bash
-#      run: |
-#        cd OpenDDS
-#        . setenv.sh
-#        make -j2 -C tools/modeling/tests
-#    - name: run OpenDDS tests
-#      shell: bash
-#      run: |
-#        cd OpenDDS
-#        . setenv.sh
-#        mkdir macos-11_0_defaults_java_no-bit_autobuild_workspace
-#        cd macos-11_0_defaults_java_no-bit_autobuild_workspace
-#        echo $GITHUB_SHA > ./SHA
-#        cat > config.xml <<EOF
-#        <autobuild>
-#        <configuration>
-#        <variable name="log_file" value="output.log"/>
-#        <variable name="log_root" value="$DDS_ROOT/macos-11_0_defaults_java_no-bit_autobuild_workspace"/>
-#        <variable name="project_root" value="$DDS_ROOT"/>
-#        <variable name="root" value="$DDS_ROOT/macos-11_0_defaults_java_no-bit_autobuild_workspace"/>
-#        <variable name="junit_xml_output" value="Tests"/>
-#        </configuration>
-#        <command name="log" options="on"/>
-#        <command name="print_os_version"/>
-#        <command name="print_env_vars"/>
-#        <command name="print_ace_config"/>
-#        <command name="print_make_version"/>
-#        <command name="check_compiler" options="gcc"/>
-#        <command name="print_autobuild_config"/>
-#        <command name="auto_run_tests" options="dir=$GITHUB_WORKSPACE/OpenDDS -Config RTPS -Config CXX11 -Config RAPIDJSON -Config NO_SHMEM -Config DDS_NO_ORBSVCS -Config NO_BUILT_IN_TOPICS -Config GH_ACTIONS -a -l java/tests/dcps_java_tests.lst -l tools/modeling/tests/modeling_tests.lst"/>
-#        <command name="log" options="off"/>
-#        <command name="process_logs" options="prettify"/>
-#        </autobuild>
-#        EOF
-#        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace/config.xml"
-#    - name: upload autobuild output
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: macos-11_0_defaults_java_no-bit_autobuild_output
-#        path: OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace
-#    - name: check results
-#      shell: bash
-#      run: |
-#        cat "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace/latest.txt"
-#        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace/latest.txt"
+  macos-11_0_defaults_artifact:
 
-  # macOS 10.15
-
-  macos-10_15_defaults_artifact:
-
-    runs-on: macos-10.15
+    runs-on: macos-11.0
 
     steps:
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: 9eae9c11f1bcd07b48c74820d8cb4c67aca9ef23 # Update to 6_5_13 when available
+        path: OpenDDS/ACE_TAO
+    - name: get ACE_TAO commit
+        shell: bash
+        run: |
+          cd OpenDDS/ACE_TAO
+          export ACE_COMMIT=$(git rev-parse HEAD)
+          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
       with:
-        path: macos-10_15_defaults_ACE_TAO.tar.xz
-        key: ${{ github.job }}_ace6tao2
+        path: macos-11_0_defaults_ACE_TAO.tar.xz
+        key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install xerces-c
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: |
@@ -1803,6 +1546,267 @@ jobs:
       with:
         repository: DOCGroup/MPC
         path: MPC
+    - name: configure OpenDDS
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
+      run: |
+        cd OpenDDS
+        ./configure --std=c++11 --tests --security --ace=$GITHUB_WORKSPACE/OpenDDS/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC --xerces3=/usr/local/Cellar/xerces-c/3.2.3 --openssl=/usr/local/opt/openssl/
+    - name: build ACE and TAO
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        cd ACE_TAO/ACE
+        make -j4
+        cd ../TAO
+        make -j4
+    - name: create ACE_TAO tar.xz artifact
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        cd OpenDDS/ACE_TAO
+        perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
+        tar cvf ../../macos-11_0_defaults_ACE_TAO.tar ACE/ace/config.h
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../macos-11_0_defaults_ACE_TAO.tar
+        xz ../../macos-11_0_defaults_ACE_TAO.tar
+    - name: upload ACE_TAO artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: macos-11_0_defaults_ace_artifact
+        path: macos-11_0_defaults_ACE_TAO.tar.xz
+
+  macos-11_0_defaults_security:
+
+    runs-on: macos-11.0
+
+    needs: macos-11_0_defaults_artifact
+
+    steps:
+    - name: install xerces-c
+      run: |
+        brew install xerces-c
+    - name: checkout MPC
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/MPC
+        path: MPC
+    - name: checkout autobuild
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/autobuild
+        path: autobuild
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: 9eae9c11f1bcd07b48c74820d8cb4c67aca9ef23 # Update to 6_5_13 when available
+        path: ACE_TAO
+    - name: download ACE_TAO artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: macos-11_0_defaults_ace_artifact
+        path: ACE_TAO
+    - name: extract ACE_TAO artifact
+      shell: bash
+      run: |
+        cd ACE_TAO
+        tar xvfJ macos-11_0_defaults_ACE_TAO.tar.xz
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: configure OpenDDS
+      run: |
+        cd OpenDDS
+        ./configure --std=c++11 --tests --rapidjson --security --ace=$GITHUB_WORKSPACE/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC --xerces3=/usr/local/Cellar/xerces-c/3.2.3 --openssl=/usr/local/opt/openssl/
+    - name: check build configuration
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        tools/scripts/show_build_config.pl
+    - uses: ammaraskar/gcc-problem-matcher@0.1
+    - name: build OpenDDS
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        make -j4
+    - name: run OpenDDS tests
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        mkdir workspace
+        cd workspace
+        echo $GITHUB_SHA > ./SHA
+        cat > config.xml <<EOF
+        <autobuild>
+        <configuration>
+        <variable name="log_file" value="output.log"/>
+        <variable name="log_root" value="$DDS_ROOT/macos-11_0_defaults_security_autobuild_workspace"/>
+        <variable name="project_root" value="$DDS_ROOT"/>
+        <variable name="root" value="$DDS_ROOT/macos-11_0_defaults_security_autobuild_workspace"/>
+        <variable name="junit_xml_output" value="Tests"/>
+        </configuration>
+        <command name="log" options="on"/>
+        <command name="print_os_version"/>
+        <command name="print_env_vars"/>
+        <command name="print_ace_config"/>
+        <command name="print_make_version"/>
+        <command name="check_compiler" options="gcc"/>
+        <command name="print_autobuild_config"/>
+        <command name="auto_run_tests" options="dir=$GITHUB_WORKSPACE/OpenDDS -Config RTPS -Config OSX -Config XERCES3 -Config OPENDDS_SECURITY -Config CXX11 -Config RAPIDJSON -Config NO_SHMEM -Config DDS_NO_ORBSVCS -Config GH_ACTIONS -a -l tests/security/security_tests.lst"/>
+        <command name="log" options="off"/>
+        <command name="process_logs" options="prettify"/>
+        </autobuild>
+        EOF
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_security_autobuild_workspace/config.xml"
+    - name: upload autobuild output
+      uses: actions/upload-artifact@v2
+      with:
+        name: macos-11_0_defaults_security_autobuild_output
+        path: OpenDDS/macos-11_0_defaults_security_autobuild_workspace
+    - name: check results
+      shell: bash
+      run: |
+        cat "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_security_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_security_autobuild_workspace/latest.txt"
+
+  macos-11_0_defaults_java_no-bit:
+
+    runs-on: macos-11.0
+
+    needs: macos-11_0_defaults_artifact
+
+    steps:
+    - name: install xerces-c
+      run: |
+        brew install xerces-c
+    - name: checkout MPC
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/MPC
+        path: MPC
+    - name: checkout autobuild
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/autobuild
+        path: autobuild
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: 9eae9c11f1bcd07b48c74820d8cb4c67aca9ef23 # Update to 6_5_13 when available
+        path: ACE_TAO
+    - name: download ACE_TAO artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: macos-11_0_defaults_ace_artifact
+        path: ACE_TAO
+    - name: extract ACE_TAO artifact
+      shell: bash
+      run: |
+        cd ACE_TAO
+        tar xvfJ macos-11_0_defaults_ACE_TAO.tar.xz
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: configure OpenDDS
+      run: |
+        cd OpenDDS
+        ./configure --std=c++11 --tests --rapidjson --java --no-built-in-topics --ace=$GITHUB_WORKSPACE/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC
+    - name: check build configuration
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        tools/scripts/show_build_config.pl
+    - uses: ammaraskar/gcc-problem-matcher@0.1
+    - name: build OpenDDS
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        make -j4
+    - name: set up TAO Hello test
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        mwc.pl -type gnuace $TAO_ROOT/tests/Hello
+    - name: build TAO Hello test
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        make -j2 dir=$TAO_ROOT/tests/Hello
+    - name: set up Modeling tests
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        cd tools/modeling/tests
+        ./setup.pl
+        cd -
+        mwc.pl -type gnuace -features built_in_topics=0 tools/modeling/tests/modeling_tests.mwc
+    - name: build Modeling tests
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        make -j2 -C tools/modeling/tests
+    - name: run OpenDDS tests
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        mkdir macos-11_0_defaults_java_no-bit_autobuild_workspace
+        cd macos-11_0_defaults_java_no-bit_autobuild_workspace
+        echo $GITHUB_SHA > ./SHA
+        cat > config.xml <<EOF
+        <autobuild>
+        <configuration>
+        <variable name="log_file" value="output.log"/>
+        <variable name="log_root" value="$DDS_ROOT/macos-11_0_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="project_root" value="$DDS_ROOT"/>
+        <variable name="root" value="$DDS_ROOT/macos-11_0_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="junit_xml_output" value="Tests"/>
+        </configuration>
+        <command name="log" options="on"/>
+        <command name="print_os_version"/>
+        <command name="print_env_vars"/>
+        <command name="print_ace_config"/>
+        <command name="print_make_version"/>
+        <command name="check_compiler" options="gcc"/>
+        <command name="print_autobuild_config"/>
+        <command name="auto_run_tests" options="dir=$GITHUB_WORKSPACE/OpenDDS -Config RTPS -Config CXX11 -Config RAPIDJSON -Config NO_SHMEM -Config DDS_NO_ORBSVCS -Config NO_BUILT_IN_TOPICS -Config GH_ACTIONS -a -l java/tests/dcps_java_tests.lst -l tools/modeling/tests/modeling_tests.lst"/>
+        <command name="log" options="off"/>
+        <command name="process_logs" options="prettify"/>
+        </autobuild>
+        EOF
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace/config.xml"
+    - name: upload autobuild output
+      uses: actions/upload-artifact@v2
+      with:
+        name: macos-11_0_defaults_java_no-bit_autobuild_output
+        path: OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace
+    - name: check results
+      shell: bash
+      run: |
+        cat "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace/latest.txt"
+
+  # macOS 10.15
+
+  macos-10_15_defaults_artifact:
+
+    runs-on: macos-10.15
+
+    steps:
     - name: checkout OpenDDS
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: actions/checkout@v2.3.4
@@ -1816,6 +1820,28 @@ jobs:
         repository: DOCGroup/ACE_TAO
         ref: ace6tao2
         path: OpenDDS/ACE_TAO
+    - name: get ACE_TAO commit
+        shell: bash
+        run: |
+          cd OpenDDS/ACE_TAO
+          export ACE_COMMIT=$(git rev-parse HEAD)
+          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
+    - name: Cache Artifact
+      id: cache-artifact
+      uses: actions/cache@v2
+      with:
+        path: macos-10_15_defaults_ACE_TAO.tar.xz
+        key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
+    - name: install xerces-c
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
+      run: |
+        brew install xerces-c
+    - name: checkout MPC
+      if: steps.cache-artifact.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/MPC
+        path: MPC
     - name: configure OpenDDS
       if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: |
