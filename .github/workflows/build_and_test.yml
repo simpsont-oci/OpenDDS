@@ -27,7 +27,7 @@ jobs:
 
   # Ubuntu 20.04
 
-  ubuntu-20_04_defaults_artifact:
+  ubuntu-20_04_defaults_ACE_TAO:
 
     runs-on: ubuntu-20.04
 
@@ -53,7 +53,7 @@ jobs:
       id: cache-artifact
       uses: actions/cache@v2
       with:
-        path: ubuntu-20_04_defaults_ACE_TAO.tar.xz
+        path: ${{ github.job }}.tar.xz
         key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install xerces
       if: steps.cache-artifact.outputs.cache-hit != 'true'
@@ -84,20 +84,20 @@ jobs:
       run: |
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
-        tar cvf ../../ubuntu-20_04_defaults_ACE_TAO.tar ACE/ace/config.h
-        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../ubuntu-20_04_defaults_ACE_TAO.tar
-        xz ../../ubuntu-20_04_defaults_ACE_TAO.tar
+        tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
+        xz ../../${{ github.job }}.tar
     - name: upload ACE_TAO artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ubuntu-20_04_defaults_ace_artifact
-        path: ubuntu-20_04_defaults_ACE_TAO.tar.xz
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
 
   ubuntu-20_04_defaults_security:
 
     runs-on: ubuntu-20.04
 
-    needs: ubuntu-20_04_defaults_artifact
+    needs: ubuntu-20_04_defaults_ACE_TAO
 
     steps:
     - name: install xerces
@@ -121,7 +121,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: ubuntu-20_04_defaults_ace_artifact
+        name: ubuntu-20_04_defaults_ACE_TAO_artifact
         path: ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -155,16 +155,16 @@ jobs:
       run: |
         cd OpenDDS
         . setenv.sh
-        mkdir ubuntu-20_04_defaults_security_autobuild_workspace
-        cd ubuntu-20_04_defaults_security_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DDS_ROOT/ubuntu-20_04_defaults_security_autobuild_workspace"/>
+        <variable name="log_root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DDS_ROOT"/>
-        <variable name="root" value="$DDS_ROOT/ubuntu-20_04_defaults_security_autobuild_workspace"/>
+        <variable name="root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -179,23 +179,23 @@ jobs:
         <command name="process_logs" options="prettify"/>
         </autobuild>
         EOF
-        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/ubuntu-20_04_defaults_security_autobuild_workspace/config.xml"
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: ubuntu-20_04_defaults_security_autobuild_output
-        path: OpenDDS/ubuntu-20_04_defaults_security_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS/${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/ubuntu-20_04_defaults_security_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/ubuntu-20_04_defaults_security_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   ubuntu-20_04_defaults_java_no-bit:
 
     runs-on: ubuntu-20.04
 
-    needs: ubuntu-20_04_defaults_artifact
+    needs: ubuntu-20_04_defaults_ACE_TAO
 
     steps:
     - name: install xerces
@@ -219,7 +219,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: ubuntu-20_04_defaults_ace_artifact
+        name: ubuntu-20_04_defaults_ACE_TAO_artifact
         path: ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -280,16 +280,16 @@ jobs:
       run: |
         cd OpenDDS
         . setenv.sh
-        mkdir ubuntu-20_04_defaults_java_no-bit_autobuild_workspace
-        cd ubuntu-20_04_defaults_java_no-bit_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DDS_ROOT/ubuntu-20_04_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="log_root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DDS_ROOT"/>
-        <variable name="root" value="$DDS_ROOT/ubuntu-20_04_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -304,21 +304,21 @@ jobs:
         <command name="process_logs" options="prettify"/>
         </autobuild>
         EOF
-        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/ubuntu-20_04_defaults_java_no-bit_autobuild_workspace/config.xml"
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: ubuntu-20_04_defaults_java_no-bit_autobuild_output
-        path: OpenDDS/ubuntu-20_04_defaults_java_no-bit_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS/${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/ubuntu-20_04_defaults_java_no-bit_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/ubuntu-20_04_defaults_java_no-bit_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   # Ubuntu 18.04
 
-  ubuntu-18_04_defaults_artifact:
+  ubuntu-18_04_defaults_ACE_TAO:
 
     runs-on: ubuntu-18.04
 
@@ -344,7 +344,7 @@ jobs:
       id: cache-artifact
       uses: actions/cache@v2
       with:
-        path: ubuntu-18_04_defaults_ACE_TAO.tar.xz
+        path: ${{ github.job }}.tar.xz
         key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install xerces
       if: steps.cache-artifact.outputs.cache-hit != 'true'
@@ -375,20 +375,20 @@ jobs:
       run: |
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
-        tar cvf ../../ubuntu-18_04_defaults_ACE_TAO.tar ACE/ace/config.h
-        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../ubuntu-18_04_defaults_ACE_TAO.tar
-        xz ../../ubuntu-18_04_defaults_ACE_TAO.tar
+        tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
+        xz ../../${{ github.job }}.tar
     - name: upload ACE_TAO artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ubuntu-18_04_defaults_ace_artifact
-        path: ubuntu-18_04_defaults_ACE_TAO.tar.xz
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
 
   ubuntu-18_04_defaults_security:
 
     runs-on: ubuntu-18.04
 
-    needs: ubuntu-18_04_defaults_artifact
+    needs: ubuntu-18_04_defaults_ACE_TAO
 
     steps:
     - name: install xerces
@@ -412,7 +412,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: ubuntu-18_04_defaults_ace_artifact
+        name: ubuntu-18_04_defaults_ACE_TAO_artifact
         path: ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -446,16 +446,16 @@ jobs:
       run: |
         cd OpenDDS
         . setenv.sh
-        mkdir ubuntu-18_04_defaults_security_autobuild_workspace
-        cd ubuntu-18_04_defaults_security_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DDS_ROOT/ubuntu-18_04_defaults_security_autobuild_workspace"/>
+        <variable name="log_root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DDS_ROOT"/>
-        <variable name="root" value="$DDS_ROOT/ubuntu-18_04_defaults_security_autobuild_workspace"/>
+        <variable name="root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -470,23 +470,23 @@ jobs:
         <command name="process_logs" options="prettify"/>
         </autobuild>
         EOF
-        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/ubuntu-18_04_defaults_security_autobuild_workspace/config.xml"
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: ubuntu-18_04_defaults_security_autobuild_output
-        path: OpenDDS/ubuntu-18_04_defaults_security_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS/${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/ubuntu-18_04_defaults_security_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/ubuntu-18_04_defaults_security_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   ubuntu-18_04_defaults_java_no-bit:
 
     runs-on: ubuntu-18.04
 
-    needs: ubuntu-18_04_defaults_artifact
+    needs: ubuntu-18_04_defaults_ACE_TAO
 
     steps:
     - name: install xerces
@@ -510,7 +510,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: ubuntu-18_04_defaults_ace_artifact
+        name: ubuntu-18_04_defaults_ACE_TAO_artifact
         path: ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -571,16 +571,16 @@ jobs:
       run: |
         cd OpenDDS
         . setenv.sh
-        mkdir ubuntu-18_04_defaults_java_no-bit_autobuild_workspace
-        cd ubuntu-18_04_defaults_java_no-bit_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DDS_ROOT/ubuntu-18_04_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="log_root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DDS_ROOT"/>
-        <variable name="root" value="$DDS_ROOT/ubuntu-18_04_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -595,21 +595,21 @@ jobs:
         <command name="process_logs" options="prettify"/>
         </autobuild>
         EOF
-        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/ubuntu-18_04_defaults_java_no-bit_autobuild_workspace/config.xml"
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: ubuntu-18_04_defaults_java_no-bit_autobuild_output
-        path: OpenDDS/ubuntu-18_04_defaults_java_no-bit_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS/${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/ubuntu-18_04_defaults_java_no-bit_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/ubuntu-18_04_defaults_java_no-bit_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   # Ubuntu 16.04
 
-  ubuntu-16_04_defaults_artifact:
+  ubuntu-16_04_defaults_ACE_TAO:
 
     runs-on: ubuntu-16.04
 
@@ -635,7 +635,7 @@ jobs:
       id: cache-artifact
       uses: actions/cache@v2
       with:
-        path: ubuntu-16_04_defaults_ACE_TAO.tar.xz
+        path: ${{ github.job }}.tar.xz
         key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install xerces
       if: steps.cache-artifact.outputs.cache-hit != 'true'
@@ -666,20 +666,20 @@ jobs:
       run: |
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
-        tar cvf ../../ubuntu-16_04_defaults_ACE_TAO.tar ACE/ace/config.h
-        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../ubuntu-16_04_defaults_ACE_TAO.tar
-        xz ../../ubuntu-16_04_defaults_ACE_TAO.tar
+        tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
+        xz ../../${{ github.job }}.tar
     - name: upload ACE_TAO artifact
       uses: actions/upload-artifact@v2
       with:
-        name: ubuntu-16_04_defaults_ace_artifact
-        path: ubuntu-16_04_defaults_ACE_TAO.tar.xz
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
 
   ubuntu-16_04_defaults_security:
 
     runs-on: ubuntu-16.04
 
-    needs: ubuntu-16_04_defaults_artifact
+    needs: ubuntu-16_04_defaults_ACE_TAO
 
     steps:
     - name: install xerces
@@ -703,7 +703,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: ubuntu-16_04_defaults_ace_artifact
+        name: ubuntu-16_04_defaults_ACE_TAO_artifact
         path: ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -737,16 +737,16 @@ jobs:
       run: |
         cd OpenDDS
         . setenv.sh
-        mkdir ubuntu-16_04_defaults_security_autobuild_workspace
-        cd ubuntu-16_04_defaults_security_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DDS_ROOT/ubuntu-16_04_defaults_security_autobuild_workspace"/>
+        <variable name="log_root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DDS_ROOT"/>
-        <variable name="root" value="$DDS_ROOT/ubuntu-16_04_defaults_security_autobuild_workspace"/>
+        <variable name="root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -761,23 +761,23 @@ jobs:
         <command name="process_logs" options="prettify"/>
         </autobuild>
         EOF
-        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/ubuntu-16_04_defaults_security_autobuild_workspace/config.xml"
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: ubuntu-16_04_defaults_security_autobuild_output
-        path: OpenDDS/ubuntu-16_04_defaults_security_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS/${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/ubuntu-16_04_defaults_security_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/ubuntu-16_04_defaults_security_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   ubuntu-16_04_defaults_java_no-bit:
 
     runs-on: ubuntu-16.04
 
-    needs: ubuntu-16_04_defaults_artifact
+    needs: ubuntu-16_04_defaults_ACE_TAO
 
     steps:
     - name: install xerces
@@ -801,7 +801,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: ubuntu-16_04_defaults_ace_artifact
+        name: ubuntu-16_04_defaults_ACE_TAO_artifact
         path: ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -862,16 +862,16 @@ jobs:
       run: |
         cd OpenDDS
         . setenv.sh
-        mkdir ubuntu-16_04_defaults_java_no-bit_autobuild_workspace
-        cd ubuntu-16_04_defaults_java_no-bit_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DDS_ROOT/ubuntu-16_04_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="log_root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DDS_ROOT"/>
-        <variable name="root" value="$DDS_ROOT/ubuntu-16_04_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -886,21 +886,21 @@ jobs:
         <command name="process_logs" options="prettify"/>
         </autobuild>
         EOF
-        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/ubuntu-16_04_defaults_java_no-bit_autobuild_workspace/config.xml"
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: ubuntu-16_04_defaults_java_no-bit_autobuild_output
-        path: OpenDDS/ubuntu-16_04_defaults_java_no-bit_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS/${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/ubuntu-16_04_defaults_java_no-bit_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/ubuntu-16_04_defaults_java_no-bit_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   # Windows 2019
 
-  windows-2019_defaults_artifact:
+  windows-2019_defaults_ACE_TAO:
 
     runs-on: windows-2019
 
@@ -926,7 +926,7 @@ jobs:
       id: cache-artifact
       uses: actions/cache@v2
       with:
-        path: windows-2019_defaults_ACE_TAO.tar.xz
+        path: ${{ github.job }}.tar.xz
         key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install openssl-windows & xerces-c
       if: steps.cache-artifact.outputs.cache-hit != 'true'
@@ -967,20 +967,20 @@ jobs:
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
         find -iname "*\.obj" | xargs rm
-        tar cvf ../../windows-2019_defaults_ACE_TAO.tar ACE/ace/config.h
-        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../windows-2019_defaults_ACE_TAO.tar
-        xz ../../windows-2019_defaults_ACE_TAO.tar
+        tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
+        xz ../../${{ github.job }}.tar
     - name: upload ACE_TAO artifact
       uses: actions/upload-artifact@v2
       with:
-        name: windows-2019_defaults_ace_artifact
-        path: windows-2019_defaults_ACE_TAO.tar.xz
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
 
   windows-2019_defaults_security:
 
     runs-on: windows-2019
 
-    needs: windows-2019_defaults_artifact
+    needs: windows-2019_defaults_ACE_TAO
 
     steps:
     - name: install openssl-windows & xerces-c
@@ -1013,7 +1013,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: windows-2019_defaults_ace_artifact
+        name: windows-2019_defaults_ACE_TAO_artifact
         path: OpenDDS/ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -1045,17 +1045,17 @@ jobs:
       shell: bash
       run: |
         cd OpenDDS
-        mkdir windows-2019_defaults_security_autobuild_workspace
-        cd windows-2019_defaults_security_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         export DBS_GHW=$(echo $GITHUB_WORKSPACE | sed 's/\\/\\\\/g')
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DBS_GHW\\OpenDDS\\windows-2019_defaults_security_autobuild_workspace"/>
+        <variable name="log_root" value="$DBS_GHW\\OpenDDS\\${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DBS_GHW\\OpenDDS"/>
-        <variable name="root" value="$DBS_GHW\\OpenDDS\\windows-2019_defaults_security_autobuild_workspace"/>
+        <variable name="root" value="$DBS_GHW\\OpenDDS\\${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -1076,24 +1076,24 @@ jobs:
       run: |
         cd OpenDDS
         call setenv.cmd
-        cd windows-2019_defaults_security_autobuild_workspace
-        perl "%GITHUB_WORKSPACE%\autobuild\autobuild.pl" "%GITHUB_WORKSPACE%\OpenDDS\windows-2019_defaults_security_autobuild_workspace\config.xml"
+        cd ${{ github.job }}_autobuild_workspace
+        perl "%GITHUB_WORKSPACE%\autobuild\autobuild.pl" "%GITHUB_WORKSPACE%\OpenDDS\${{ github.job }}_autobuild_workspace\config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: windows-2019_defaults_security_autobuild_output
-        path: OpenDDS\windows-2019_defaults_security_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS\${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/windows-2019_defaults_security_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/windows-2019_defaults_security_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   windows-2019_defaults_java_no-bit:
 
     runs-on: windows-2019
 
-    needs: windows-2019_defaults_artifact
+    needs: windows-2019_defaults_ACE_TAO
 
     steps:
     - name: install xerces-c
@@ -1126,7 +1126,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: windows-2019_defaults_ace_artifact
+        name: windows-2019_defaults_ACE_TAO_artifact
         path: OpenDDS/ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -1158,17 +1158,17 @@ jobs:
       shell: bash
       run: |
         cd OpenDDS
-        mkdir windows-2019_defaults_java_no-bit_autobuild_workspace
-        cd windows-2019_defaults_java_no-bit_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         export DBS_GHW=$(echo $GITHUB_WORKSPACE | sed 's/\\/\\\\/g')
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DBS_GHW\\OpenDDS\\windows-2019_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="log_root" value="$DBS_GHW\\OpenDDS\\${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DBS_GHW\\OpenDDS"/>
-        <variable name="root" value="$DBS_GHW\\OpenDDS\\windows-2019_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="root" value="$DBS_GHW\\OpenDDS\\${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -1189,22 +1189,22 @@ jobs:
       run: |
         cd OpenDDS
         call setenv.cmd
-        cd windows-2019_defaults_java_no-bit_autobuild_workspace
-        perl "%GITHUB_WORKSPACE%\autobuild\autobuild.pl" "%GITHUB_WORKSPACE%\OpenDDS\windows-2019_defaults_java_no-bit_autobuild_workspace\config.xml"
+        cd ${{ github.job }}_autobuild_workspace
+        perl "%GITHUB_WORKSPACE%\autobuild\autobuild.pl" "%GITHUB_WORKSPACE%\OpenDDS\${{ github.job }}_autobuild_workspace\config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: windows-2019_defaults_java_no-bit_autobuild_output
-        path: OpenDDS\windows-2019_defaults_java_no-bit_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS\${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/windows-2019_defaults_java_no-bit_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/windows-2019_defaults_java_no-bit_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   # Windows 2016
 
-  windows-2016_no_debug_no_inline_artifact:
+  windows-2016_no-debug_no-inline_ACE_TAO:
 
     runs-on: windows-2016
 
@@ -1230,7 +1230,7 @@ jobs:
       id: cache-artifact
       uses: actions/cache@v2
       with:
-        path: windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
+        path: ${{ github.job }}.tar.xz
         key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install openssl-windows & xerces-c
       if: steps.cache-artifact.outputs.cache-hit != 'true'
@@ -1271,20 +1271,20 @@ jobs:
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
         find -iname "*\.obj" | xargs rm
-        tar cvf ../../windows-2016_no_debug_no_inline_ACE_TAO.tar ACE/ace/config.h
-        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../windows-2016_no_debug_no_inline_ACE_TAO.tar
-        xz ../../windows-2016_no_debug_no_inline_ACE_TAO.tar
+        tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
+        xz ../../${{ github.job }}.tar
     - name: upload ACE_TAO artifact
       uses: actions/upload-artifact@v2
       with:
-        name: windows-2016_no_debug_no_inline_artifact
-        path: windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
 
-  windows-2016_no_debug_no_inline_security:
+  windows-2016_no-debug_no-inline_security:
 
     runs-on: windows-2016
 
-    needs: windows-2016_no_debug_no_inline_artifact
+    needs: windows-2016_no-debug_no-inline_ACE_TAO
 
     steps:
     - name: install openssl-windows & xerces-c
@@ -1317,14 +1317,14 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: windows-2016_no_debug_no_inline_artifact
+        name: windows-2016_no-debug_no-inline_ACE_TAO_artifact
         path: OpenDDS/ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
       run: |
         cd OpenDDS/ACE_TAO
-        tar xvfJ windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
-        rm -f windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
+        tar xvfJ windows-2016_no-debug_no-inline_ACE_TAO.tar.xz
+        rm -f windows-2016_no-debug_no-inline_ACE_TAO.tar.xz
     - uses: ammaraskar/msvc-problem-matcher@0.1
     - name: set up msvc env
       uses: ilammy/msvc-dev-cmd@v1.5.0
@@ -1349,17 +1349,17 @@ jobs:
       shell: bash
       run: |
         cd OpenDDS
-        mkdir windows-2016_no_debug_no_inline_security_autobuild_workspace
-        cd windows-2016_no_debug_no_inline_security_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         export DBS_GHW=$(echo $GITHUB_WORKSPACE | sed 's/\\/\\\\/g')
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DBS_GHW\\OpenDDS\\windows-2016_no_debug_no_inline_security_autobuild_workspace"/>
+        <variable name="log_root" value="$DBS_GHW\\OpenDDS\\${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DBS_GHW\\OpenDDS"/>
-        <variable name="root" value="$DBS_GHW\\OpenDDS\\windows-2016_no_debug_no_inline_security_autobuild_workspace"/>
+        <variable name="root" value="$DBS_GHW\\OpenDDS\\${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -1380,24 +1380,24 @@ jobs:
       run: |
         cd OpenDDS
         call setenv.cmd
-        cd windows-2016_no_debug_no_inline_security_autobuild_workspace
-        perl "%GITHUB_WORKSPACE%\autobuild\autobuild.pl" "%GITHUB_WORKSPACE%\OpenDDS\windows-2016_no_debug_no_inline_security_autobuild_workspace\config.xml"
+        cd ${{ github.job }}_autobuild_workspace
+        perl "%GITHUB_WORKSPACE%\autobuild\autobuild.pl" "%GITHUB_WORKSPACE%\OpenDDS\${{ github.job }}_autobuild_workspace\config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: windows-2016_no_debug_no_inline_security_autobuild_output
-        path: OpenDDS\windows-2016_no_debug_no_inline_security_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS\${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/windows-2016_no_debug_no_inline_security_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/windows-2016_no_debug_no_inline_security_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
-  windows-2016_no_debug_no_inline_java_no-bit:
+  windows-2016_no-debug_no-inline_java_no-bit:
 
     runs-on: windows-2016
 
-    needs: windows-2016_no_debug_no_inline_artifact
+    needs: windows-2016_no-debug_no-inline_ACE_TAO
 
     steps:
     - name: install xerces-c
@@ -1430,14 +1430,14 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: windows-2016_no_debug_no_inline_artifact
+        name: windows-2016_no-debug_no-inline_ACE_TAO_artifact
         path: OpenDDS/ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
       run: |
         cd OpenDDS/ACE_TAO
-        tar xvfJ windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
-        rm -f windows-2016_no_debug_no_inline_ACE_TAO.tar.xz
+        tar xvfJ windows-2016_no-debug_no-inline_ACE_TAO.tar.xz
+        rm -f windows-2016_no-debug_no-inline_ACE_TAO.tar.xz
     - uses: ammaraskar/msvc-problem-matcher@0.1
     - name: set up msvc env
       uses: ilammy/msvc-dev-cmd@v1.5.0
@@ -1462,17 +1462,17 @@ jobs:
       shell: bash
       run: |
         cd OpenDDS
-        mkdir windows-2016_no_debug_no_inline_java_no-bit_autobuild_workspace
-        cd windows-2016_no_debug_no_inline_java_no-bit_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         export DBS_GHW=$(echo $GITHUB_WORKSPACE | sed 's/\\/\\\\/g')
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DBS_GHW\\OpenDDS\\windows-2016_no_debug_no_inline_java_no-bit_autobuild_workspace"/>
+        <variable name="log_root" value="$DBS_GHW\\OpenDDS\\${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DBS_GHW\\OpenDDS"/>
-        <variable name="root" value="$DBS_GHW\\OpenDDS\\windows-2016_no_debug_no_inline_java_no-bit_autobuild_workspace"/>
+        <variable name="root" value="$DBS_GHW\\OpenDDS\\${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -1493,22 +1493,22 @@ jobs:
       run: |
         cd OpenDDS
         call setenv.cmd
-        cd windows-2016_no_debug_no_inline_java_no-bit_autobuild_workspace
-        perl "%GITHUB_WORKSPACE%\autobuild\autobuild.pl" "%GITHUB_WORKSPACE%\OpenDDS\windows-2016_no_debug_no_inline_java_no-bit_autobuild_workspace\config.xml"
+        cd ${{ github.job }}_autobuild_workspace
+        perl "%GITHUB_WORKSPACE%\autobuild\autobuild.pl" "%GITHUB_WORKSPACE%\OpenDDS\${{ github.job }}_autobuild_workspace\config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: windows-2016_no_debug_no_inline_java_no-bit_autobuild_output
-        path: OpenDDS\windows-2016_no_debug_no_inline_java_no-bit_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS\${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/windows-2016_no_debug_no_inline_java_no-bit_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/windows-2016_no_debug_no_inline_java_no-bit_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   # macOS 11.0
 
-  macos-11_0_defaults_artifact:
+  macos-11_0_defaults_ACE_TAO:
 
     runs-on: macos-11.0
 
@@ -1534,7 +1534,7 @@ jobs:
       id: cache-artifact
       uses: actions/cache@v2
       with:
-        path: macos-11_0_defaults_ACE_TAO.tar.xz
+        path: ${{ github.job }}.tar.xz
         key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install xerces-c
       if: steps.cache-artifact.outputs.cache-hit != 'true'
@@ -1566,20 +1566,20 @@ jobs:
       run: |
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
-        tar cvf ../../macos-11_0_defaults_ACE_TAO.tar ACE/ace/config.h
-        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../macos-11_0_defaults_ACE_TAO.tar
-        xz ../../macos-11_0_defaults_ACE_TAO.tar
+        tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
+        xz ../../${{ github.job }}.tar
     - name: upload ACE_TAO artifact
       uses: actions/upload-artifact@v2
       with:
-        name: macos-11_0_defaults_ace_artifact
-        path: macos-11_0_defaults_ACE_TAO.tar.xz
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
 
   macos-11_0_defaults_security:
 
     runs-on: macos-11.0
 
-    needs: macos-11_0_defaults_artifact
+    needs: macos-11_0_defaults_ACE_TAO
 
     steps:
     - name: install xerces-c
@@ -1604,7 +1604,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: macos-11_0_defaults_ace_artifact
+        name: macos-11_0_defaults_ACE_TAO_artifact
         path: ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -1638,16 +1638,16 @@ jobs:
       run: |
         cd OpenDDS
         . setenv.sh
-        mkdir macos-11_0_defaults_security_autobuild_workspace
-        cd macos-11_0_defaults_security_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DDS_ROOT/macos-11_0_defaults_security_autobuild_workspace"/>
+        <variable name="log_root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DDS_ROOT"/>
-        <variable name="root" value="$DDS_ROOT/macos-11_0_defaults_security_autobuild_workspace"/>
+        <variable name="root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -1662,23 +1662,23 @@ jobs:
         <command name="process_logs" options="prettify"/>
         </autobuild>
         EOF
-        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_security_autobuild_workspace/config.xml"
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: macos-11_0_defaults_security_autobuild_output
-        path: OpenDDS/macos-11_0_defaults_security_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS/${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_security_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_security_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   macos-11_0_defaults_java_no-bit:
 
     runs-on: macos-11.0
 
-    needs: macos-11_0_defaults_artifact
+    needs: macos-11_0_defaults_ACE_TAO
 
     steps:
     - name: install xerces-c
@@ -1703,7 +1703,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: macos-11_0_defaults_ace_artifact
+        name: macos-11_0_defaults_ACE_TAO_artifact
         path: ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -1764,16 +1764,16 @@ jobs:
       run: |
         cd OpenDDS
         . setenv.sh
-        mkdir macos-11_0_defaults_java_no-bit_autobuild_workspace
-        cd macos-11_0_defaults_java_no-bit_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DDS_ROOT/macos-11_0_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="log_root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DDS_ROOT"/>
-        <variable name="root" value="$DDS_ROOT/macos-11_0_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -1788,21 +1788,21 @@ jobs:
         <command name="process_logs" options="prettify"/>
         </autobuild>
         EOF
-        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace/config.xml"
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: macos-11_0_defaults_java_no-bit_autobuild_output
-        path: OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS/${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/macos-11_0_defaults_java_no-bit_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   # macOS 10.15
 
-  macos-10_15_defaults_artifact:
+  macos-10_15_defaults_ACE_TAO:
 
     runs-on: macos-10.15
 
@@ -1828,7 +1828,7 @@ jobs:
       id: cache-artifact
       uses: actions/cache@v2
       with:
-        path: macos-10_15_defaults_ACE_TAO.tar.xz
+        path: ${{ github.job }}.tar.xz
         key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install xerces-c
       if: steps.cache-artifact.outputs.cache-hit != 'true'
@@ -1860,20 +1860,20 @@ jobs:
       run: |
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
-        tar cvf ../../macos-10_15_defaults_ACE_TAO.tar ACE/ace/config.h
-        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../macos-10_15_defaults_ACE_TAO.tar
-        xz ../../macos-10_15_defaults_ACE_TAO.tar
+        tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
+        xz ../../${{ github.job }}.tar
     - name: upload ACE_TAO artifact
       uses: actions/upload-artifact@v2
       with:
-        name: macos-10_15_defaults_ace_artifact
-        path: macos-10_15_defaults_ACE_TAO.tar.xz
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
 
   macos-10_15_defaults_security:
 
     runs-on: macos-10.15
 
-    needs: macos-10_15_defaults_artifact
+    needs: macos-10_15_defaults_ACE_TAO
 
     steps:
     - name: install xerces-c
@@ -1898,7 +1898,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: macos-10_15_defaults_ace_artifact
+        name: macos-10_15_defaults_ACE_TAO_artifact
         path: ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -1932,16 +1932,16 @@ jobs:
       run: |
         cd OpenDDS
         . setenv.sh
-        mkdir macos-10_15_defaults_security_autobuild_workspace
-        cd macos-10_15_defaults_security_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DDS_ROOT/macos-10_15_defaults_security_autobuild_workspace"/>
+        <variable name="log_root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DDS_ROOT"/>
-        <variable name="root" value="$DDS_ROOT/macos-10_15_defaults_security_autobuild_workspace"/>
+        <variable name="root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -1956,23 +1956,23 @@ jobs:
         <command name="process_logs" options="prettify"/>
         </autobuild>
         EOF
-        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/macos-10_15_defaults_security_autobuild_workspace/config.xml"
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: macos-10_15_defaults_security_autobuild_output
-        path: OpenDDS/macos-10_15_defaults_security_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS/${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/macos-10_15_defaults_security_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/macos-10_15_defaults_security_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
   macos-10_15_defaults_java_no-bit:
 
     runs-on: macos-10.15
 
-    needs: macos-10_15_defaults_artifact
+    needs: macos-10_15_defaults_ACE_TAO
 
     steps:
     - name: install xerces-c
@@ -1997,7 +1997,7 @@ jobs:
     - name: download ACE_TAO artifact
       uses: actions/download-artifact@v2
       with:
-        name: macos-10_15_defaults_ace_artifact
+        name: macos-10_15_defaults_ACE_TAO_artifact
         path: ACE_TAO
     - name: extract ACE_TAO artifact
       shell: bash
@@ -2058,16 +2058,16 @@ jobs:
       run: |
         cd OpenDDS
         . setenv.sh
-        mkdir macos-10_15_defaults_java_no-bit_autobuild_workspace
-        cd macos-10_15_defaults_java_no-bit_autobuild_workspace
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         cat > config.xml <<EOF
         <autobuild>
         <configuration>
         <variable name="log_file" value="output.log"/>
-        <variable name="log_root" value="$DDS_ROOT/macos-10_15_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="log_root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="project_root" value="$DDS_ROOT"/>
-        <variable name="root" value="$DDS_ROOT/macos-10_15_defaults_java_no-bit_autobuild_workspace"/>
+        <variable name="root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
         <variable name="junit_xml_output" value="Tests"/>
         </configuration>
         <command name="log" options="on"/>
@@ -2082,14 +2082,14 @@ jobs:
         <command name="process_logs" options="prettify"/>
         </autobuild>
         EOF
-        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/macos-10_15_defaults_java_no-bit_autobuild_workspace/config.xml"
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
-        name: macos-10_15_defaults_java_no-bit_autobuild_output
-        path: OpenDDS/macos-10_15_defaults_java_no-bit_autobuild_workspace
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS/${{ github.job }}_autobuild_workspace
     - name: check results
       shell: bash
       run: |
-        cat "$GITHUB_WORKSPACE/OpenDDS/macos-10_15_defaults_java_no-bit_autobuild_workspace/latest.txt"
-        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/macos-10_15_defaults_java_no-bit_autobuild_workspace/latest.txt"
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
