@@ -1326,7 +1326,7 @@ jobs:
         name: ${{ github.job }}_artifact
         path: ${{ github.job }}.tar.xz
 
-  windows-2019_defaults_security:
+  windows-2019_defaults_security_build:
 
     runs-on: windows-2019
 
@@ -1391,6 +1391,83 @@ jobs:
         cd OpenDDS
         call setenv.cmd
         msbuild -p:Configuration=Debug,Platform=x64 -m DDS.sln
+    - name: create OpenDDS tar.xz artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        rm -rf ACE_TAO
+        find -iname "*\.obj" | xargs rm
+        tar cvf ../${{ github.job }}.tar setenv.cmd
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
+        xz ../${{ github.job }}.tar
+    - name: upload OpenDDS artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
+
+  windows-2019_defaults_security_test:
+
+    runs-on: windows-2019
+
+    needs: windows-2019_defaults_build
+
+    steps:
+    - name: install openssl-windows & xerces-c
+      uses: lukka/run-vcpkg@v6
+      with:
+        vcpkgGitCommitId: ec6fe06
+        vcpkgArguments: --recurse openssl-windows xerces-c
+        vcpkgTriplet: x64-windows
+    - name: checkout MPC
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/MPC
+        path: MPC
+    - name: checkout autobuild
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/autobuild
+        path: autobuild
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: ace6tao2
+        path: OpenDDS/ACE_TAO
+    - name: download ACE_TAO artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: windows-2019_defaults_ACE_TAO_artifact
+        path: OpenDDS/ACE_TAO
+    - name: extract ACE_TAO artifact
+      shell: bash
+      run: |
+        cd OpenDDS/ACE_TAO
+        tar xvfJ windows-2019_defaults_ACE_TAO.tar.xz
+        rm -f windows-2019_defaults_ACE_TAO.tar.xz
+    - name: download OpenDDS artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: windows-2019_defaults_security_build_artifact
+        path: OpenDDS
+    - name: extract OpenDDS artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        tar xvfJ windows-2019_defaults_security_build.tar.xz
+        rm -f windows-2019_defaults_security_build.tar.xz
+    - name: check build configuration
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        tools/scripts/show_build_config.pl
     - name: create autobuild config
       shell: bash
       run: |
@@ -1439,7 +1516,7 @@ jobs:
         cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
         grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
-  windows-2019_defaults_java_no-bit:
+  windows-2019_defaults_java_no-bit_build:
 
     runs-on: windows-2019
 
@@ -1504,6 +1581,83 @@ jobs:
         cd OpenDDS
         call setenv.cmd
         msbuild -p:Configuration=Debug,Platform=x64 -m DDS.sln
+    - name: create OpenDDS tar.xz artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        rm -rf ACE_TAO
+        find -iname "*\.obj" | xargs rm
+        tar cvf ../${{ github.job }}.tar setenv.cmd
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
+        xz ../${{ github.job }}.tar
+    - name: upload OpenDDS artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
+
+  windows-2019_defaults_java_no-bit_test:
+
+    runs-on: windows-2019
+
+    needs: windows-2019_defaults_java_no-bit_build
+
+    steps:
+    - name: install xerces-c
+      uses: lukka/run-vcpkg@v6
+      with:
+        vcpkgGitCommitId: ec6fe06
+        vcpkgArguments: --recurse xerces-c
+        vcpkgTriplet: x64-windows
+    - name: checkout MPC
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/MPC
+        path: MPC
+    - name: checkout autobuild
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/autobuild
+        path: autobuild
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: ace6tao2
+        path: OpenDDS/ACE_TAO
+    - name: download ACE_TAO artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: windows-2019_defaults_ACE_TAO_artifact
+        path: OpenDDS/ACE_TAO
+    - name: extract ACE_TAO artifact
+      shell: bash
+      run: |
+        cd OpenDDS/ACE_TAO
+        tar xvfJ windows-2019_defaults_ACE_TAO.tar.xz
+        rm -f windows-2019_defaults_ACE_TAO.tar.xz
+    - name: download OpenDDS artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: windows-2019_defaults_java_no-bit_build_artifact
+        path: OpenDDS
+    - name: extract OpenDDS artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        tar xvfJ windows-2019_defaults_java_no-bit_build.tar.xz
+        rm -f windows-2019_defaults_java_no-bit_build.tar.xz
+    - name: check build configuration
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        tools/scripts/show_build_config.pl
     - name: create autobuild config
       shell: bash
       run: |
