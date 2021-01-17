@@ -1638,8 +1638,8 @@ jobs:
       run: |
         cd OpenDDS
         . setenv.sh
-        mkdir workspace
-        cd workspace
+        mkdir macos-11_0_defaults_security_autobuild_workspace
+        cd macos-11_0_defaults_security_autobuild_workspace
         echo $GITHUB_SHA > ./SHA
         cat > config.xml <<EOF
         <autobuild>
