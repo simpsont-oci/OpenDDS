@@ -529,7 +529,7 @@ jobs:
 
     runs-on: ubuntu-18.04
 
-    needs: ubuntu-18_04_defaults_build
+    needs: ubuntu-18_04_defaults_security_build
 
     steps:
     - name: install xerces
@@ -1410,7 +1410,7 @@ jobs:
 
     runs-on: windows-2019
 
-    needs: windows-2019_defaults_build
+    needs: windows-2019_defaults_security_build
 
     steps:
     - name: install openssl-windows & xerces-c
