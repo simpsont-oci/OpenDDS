@@ -44,11 +44,11 @@ jobs:
         ref: ace6tao2
         path: OpenDDS/ACE_TAO
     - name: get ACE_TAO commit
-        shell: bash
-        run: |
-          cd OpenDDS/ACE_TAO
-          export ACE_COMMIT=$(git rev-parse HEAD)
-          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
+      shell: bash
+      run: |
+        cd OpenDDS/ACE_TAO
+        export ACE_COMMIT=$(git rev-parse HEAD)
+        echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
@@ -335,11 +335,11 @@ jobs:
         ref: ace6tao2
         path: OpenDDS/ACE_TAO
     - name: get ACE_TAO commit
-        shell: bash
-        run: |
-          cd OpenDDS/ACE_TAO
-          export ACE_COMMIT=$(git rev-parse HEAD)
-          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
+      shell: bash
+      run: |
+        cd OpenDDS/ACE_TAO
+        export ACE_COMMIT=$(git rev-parse HEAD)
+        echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
@@ -626,11 +626,11 @@ jobs:
         ref: ace6tao2
         path: OpenDDS/ACE_TAO
     - name: get ACE_TAO commit
-        shell: bash
-        run: |
-          cd OpenDDS/ACE_TAO
-          export ACE_COMMIT=$(git rev-parse HEAD)
-          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
+      shell: bash
+      run: |
+        cd OpenDDS/ACE_TAO
+        export ACE_COMMIT=$(git rev-parse HEAD)
+        echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
@@ -917,11 +917,11 @@ jobs:
         ref: ace6tao2
         path: OpenDDS/ACE_TAO
     - name: get ACE_TAO commit
-        shell: bash
-        run: |
-          cd OpenDDS/ACE_TAO
-          export ACE_COMMIT=$(git rev-parse HEAD)
-          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
+      shell: bash
+      run: |
+        cd OpenDDS/ACE_TAO
+        export ACE_COMMIT=$(git rev-parse HEAD)
+        echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
@@ -1221,11 +1221,11 @@ jobs:
         ref: ace6tao2
         path: OpenDDS/ACE_TAO
     - name: get ACE_TAO commit
-        shell: bash
-        run: |
-          cd OpenDDS/ACE_TAO
-          export ACE_COMMIT=$(git rev-parse HEAD)
-          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
+      shell: bash
+      run: |
+        cd OpenDDS/ACE_TAO
+        export ACE_COMMIT=$(git rev-parse HEAD)
+        echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
@@ -1525,11 +1525,11 @@ jobs:
         ref: 9eae9c11f1bcd07b48c74820d8cb4c67aca9ef23 # Update to 6_5_13 when available
         path: OpenDDS/ACE_TAO
     - name: get ACE_TAO commit
-        shell: bash
-        run: |
-          cd OpenDDS/ACE_TAO
-          export ACE_COMMIT=$(git rev-parse HEAD)
-          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
+      shell: bash
+      run: |
+        cd OpenDDS/ACE_TAO
+        export ACE_COMMIT=$(git rev-parse HEAD)
+        echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
@@ -1821,11 +1821,11 @@ jobs:
         ref: ace6tao2
         path: OpenDDS/ACE_TAO
     - name: get ACE_TAO commit
-        shell: bash
-        run: |
-          cd OpenDDS/ACE_TAO
-          export ACE_COMMIT=$(git rev-parse HEAD)
-          echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
+      shell: bash
+      run: |
+        cd OpenDDS/ACE_TAO
+        export ACE_COMMIT=$(git rev-parse HEAD)
+        echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
     - name: Cache Artifact
       id: cache-artifact
       uses: actions/cache@v2
