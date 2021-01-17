@@ -363,7 +363,7 @@ jobs:
 
     runs-on: ubuntu-20.04
 
-    needs: ubuntu-20_04_defaults_build
+    needs: ubuntu-20_04_defaults_java_no-bit_build
 
     steps:
     - name: install xerces
