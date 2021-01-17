@@ -168,7 +168,7 @@ jobs:
 
     runs-on: ubuntu-20.04
 
-    needs: ubuntu-20_04_defaults_ACE_TAO
+    needs: ubuntu-20_04_defaults_security_build
 
     steps:
     - name: install xerces
@@ -261,7 +261,7 @@ jobs:
         cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
         grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
-  ubuntu-20_04_defaults_java_no-bit:
+  ubuntu-20_04_defaults_java_no-bit_build:
 
     runs-on: ubuntu-20.04
 
@@ -345,6 +345,86 @@ jobs:
         cd OpenDDS
         . setenv.sh
         make -j2 -C tools/modeling/tests
+    - name: create OpenDDS tar.xz artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        rm -rf ACE_TAO
+        tar cvf ../${{ github.job }}.tar setenv.sh
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
+        xz ../${{ github.job }}.tar
+    - name: upload OpenDDS artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
+
+  ubuntu-20_04_defaults_java_no-bit_test:
+
+    runs-on: ubuntu-20.04
+
+    needs: ubuntu-20_04_defaults_build
+
+    steps:
+    - name: install xerces
+      run: sudo apt-get -y install libxerces-c-dev
+    - name: checkout MPC
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/MPC
+        path: MPC
+    - name: checkout autobuild
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/autobuild
+        path: autobuild
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: ace6tao2
+        path: ACE_TAO
+    - name: download ACE_TAO artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ubuntu-20_04_defaults_ACE_TAO_artifact
+        path: ACE_TAO
+    - name: extract ACE_TAO artifact
+      shell: bash
+      run: |
+        cd ACE_TAO
+        tar xvfJ ubuntu-20_04_defaults_ACE_TAO.tar.xz
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: configure OpenDDS
+      run: |
+        cd OpenDDS
+        ./configure --tests --java=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64 --no-built-in-topics --rapidjson --ace=$GITHUB_WORKSPACE/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC
+    - name: check build configuration
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        tools/scripts/show_build_config.pl
+    - name: download OpenDDS artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: ubuntu-20_04_defaults_java_no-bit_build_artifact
+        path: OpenDDS
+    - name: extract OpenDDS artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        tar xvfJ ubuntu-20_04_defaults_java_no-bit_build.tar.xz
+    - name: check build configuration
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        tools/scripts/show_build_config.pl
     - name: run OpenDDS tests
       shell: bash
       run: |
