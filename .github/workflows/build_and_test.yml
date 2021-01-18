@@ -2588,7 +2588,7 @@ jobs:
 
     runs-on: macos-11.0
 
-    needs: macos-11_0_defaults_java_no-bit_build:
+    needs: macos-11_0_defaults_java_no-bit_build
 
     steps:
     - name: install xerces-c
