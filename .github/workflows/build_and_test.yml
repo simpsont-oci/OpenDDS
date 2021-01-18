@@ -84,6 +84,7 @@ jobs:
       run: |
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
+        find -iname "*\.o" | xargs rm
         tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
         xz ../../${{ github.job }}.tar
@@ -155,6 +156,7 @@ jobs:
       run: |
         cd OpenDDS
         rm -rf ACE_TAO
+        find -iname "*\.o" | xargs rm
         tar cvf ../${{ github.job }}.tar setenv.sh
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
         xz ../${{ github.job }}.tar
@@ -350,6 +352,7 @@ jobs:
       run: |
         cd OpenDDS
         rm -rf ACE_TAO
+        find -iname "*\.o" | xargs rm
         tar cvf ../${{ github.job }}.tar setenv.sh
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
         xz ../${{ github.job }}.tar
@@ -399,16 +402,6 @@ jobs:
       with:
         path: OpenDDS
         submodules: true
-    - name: configure OpenDDS
-      run: |
-        cd OpenDDS
-        ./configure --tests --java=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64 --no-built-in-topics --rapidjson --ace=$GITHUB_WORKSPACE/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC
-    - name: check build configuration
-      shell: bash
-      run: |
-        cd OpenDDS
-        . setenv.sh
-        tools/scripts/show_build_config.pl
     - name: download OpenDDS artifact
       uses: actions/download-artifact@v2
       with:
@@ -525,6 +518,7 @@ jobs:
       run: |
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
+        find -iname "*\.o" | xargs rm
         tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
         xz ../../${{ github.job }}.tar
@@ -596,6 +590,7 @@ jobs:
       run: |
         cd OpenDDS
         rm -rf ACE_TAO
+        find -iname "*\.o" | xargs rm
         tar cvf ../${{ github.job }}.tar setenv.sh
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
         xz ../${{ github.job }}.tar
@@ -791,6 +786,7 @@ jobs:
       run: |
         cd OpenDDS
         rm -rf ACE_TAO
+        find -iname "*\.o" | xargs rm
         tar cvf ../${{ github.job }}.tar setenv.sh
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
         xz ../${{ github.job }}.tar
@@ -956,6 +952,7 @@ jobs:
       run: |
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
+        find -iname "*\.o" | xargs rm
         tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
         xz ../../${{ github.job }}.tar
@@ -1027,6 +1024,7 @@ jobs:
       run: |
         cd OpenDDS
         rm -rf ACE_TAO
+        find -iname "*\.o" | xargs rm
         tar cvf ../${{ github.job }}.tar setenv.sh
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
         xz ../${{ github.job }}.tar
@@ -1222,6 +1220,7 @@ jobs:
       run: |
         cd OpenDDS
         rm -rf ACE_TAO
+        find -iname "*\.o" | xargs rm
         tar cvf ../${{ github.job }}.tar setenv.sh
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
         xz ../${{ github.job }}.tar
@@ -1476,7 +1475,7 @@ jobs:
       run: |
         cd OpenDDS
         rm -rf ACE_TAO
-        find -iname "*\.obj" | xargs rm
+        find -iname "*\.obj" -o -iname "*\.pdb" -o -iname "*\.idb" -o -type f -iname "*\.tlog" | xargs rm
         tar cvf ../${{ github.job }}.tar setenv.cmd
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
         xz ../${{ github.job }}.tar
@@ -1666,7 +1665,7 @@ jobs:
       run: |
         cd OpenDDS
         rm -rf ACE_TAO
-        find -iname "*\.obj" | xargs rm
+        find -iname "*\.obj" -o -iname "*\.pdb" -o -iname "*\.idb" -o -type f -iname "*\.tlog" | xargs rm
         tar cvf ../${{ github.job }}.tar setenv.cmd
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
         xz ../${{ github.job }}.tar
@@ -1934,7 +1933,7 @@ jobs:
       run: |
         cd OpenDDS
         rm -rf ACE_TAO
-        find -iname "*\.obj" | xargs rm
+        find -iname "*\.obj" -o -iname "*\.pdb" -o -iname "*\.idb" -o -type f -iname "*\.tlog" | xargs rm
         tar cvf ../${{ github.job }}.tar setenv.cmd
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
         xz ../${{ github.job }}.tar
@@ -2124,7 +2123,7 @@ jobs:
       run: |
         cd OpenDDS
         rm -rf ACE_TAO
-        find -iname "*\.obj" | xargs rm
+        find -iname "*\.obj" -o -iname "*\.pdb" -o -iname "*\.idb" -o -type f -iname "*\.tlog" | xargs rm
         tar cvf ../${{ github.job }}.tar setenv.cmd
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
         xz ../${{ github.job }}.tar
@@ -2304,6 +2303,7 @@ jobs:
       run: |
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
+        find -iname "*\.o" | xargs rm
         tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
         xz ../../${{ github.job }}.tar
@@ -2313,7 +2313,7 @@ jobs:
         name: ${{ github.job }}_artifact
         path: ${{ github.job }}.tar.xz
 
-  macos-11_0_defaults_security:
+  macos-11_0_defaults_security_build:
 
     runs-on: macos-11.0
 
@@ -2371,6 +2371,78 @@ jobs:
         cd OpenDDS
         . setenv.sh
         make -j4
+    - name: create OpenDDS tar.xz artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        rm -rf ACE_TAO
+        find -iname "*\.o" | xargs rm
+        tar cvf ../${{ github.job }}.tar setenv.sh
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
+        xz ../${{ github.job }}.tar
+    - name: upload OpenDDS artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
+
+  macos-11_0_defaults_security_test:
+
+    runs-on: macos-11.0
+
+    needs: macos-11_0_defaults_security_build
+
+    steps:
+    - name: install xerces-c
+      run: |
+        brew install xerces-c
+    - name: checkout MPC
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/MPC
+        path: MPC
+    - name: checkout autobuild
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/autobuild
+        path: autobuild
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: 9eae9c11f1bcd07b48c74820d8cb4c67aca9ef23 # Update to 6_5_13 when available
+        path: ACE_TAO
+    - name: download ACE_TAO artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: macos-11_0_defaults_ACE_TAO_artifact
+        path: ACE_TAO
+    - name: extract ACE_TAO artifact
+      shell: bash
+      run: |
+        cd ACE_TAO
+        tar xvfJ macos-11_0_defaults_ACE_TAO.tar.xz
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: download OpenDDS artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: macos-11_0_defaults_security_build_artifact
+        path: OpenDDS
+    - name: extract OpenDDS artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        tar xvfJ macos-11_0_defaults_security_build.tar.xz
+    - name: check build configuration
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        tools/scripts/show_build_config.pl
     - name: run OpenDDS tests
       shell: bash
       run: |
@@ -2412,7 +2484,7 @@ jobs:
         cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
         grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
-  macos-11_0_defaults_java_no-bit:
+  macos-11_0_defaults_java_no-bit_build:
 
     runs-on: macos-11.0
 
@@ -2497,6 +2569,78 @@ jobs:
         cd OpenDDS
         . setenv.sh
         make -j2 -C tools/modeling/tests
+    - name: create OpenDDS tar.xz artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        rm -rf ACE_TAO
+        find -iname "*\.o" | xargs rm
+        tar cvf ../${{ github.job }}.tar setenv.sh
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
+        xz ../${{ github.job }}.tar
+    - name: upload OpenDDS artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
+
+  macos-11_0_defaults_java_no-bit_test:
+
+    runs-on: macos-11.0
+
+    needs: macos-11_0_defaults_java_no-bit_build:
+
+    steps:
+    - name: install xerces-c
+      run: |
+        brew install xerces-c
+    - name: checkout MPC
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/MPC
+        path: MPC
+    - name: checkout autobuild
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/autobuild
+        path: autobuild
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: 9eae9c11f1bcd07b48c74820d8cb4c67aca9ef23 # Update to 6_5_13 when available
+        path: ACE_TAO
+    - name: download ACE_TAO artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: macos-11_0_defaults_ACE_TAO_artifact
+        path: ACE_TAO
+    - name: extract ACE_TAO artifact
+      shell: bash
+      run: |
+        cd ACE_TAO
+        tar xvfJ macos-11_0_defaults_ACE_TAO.tar.xz
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: download OpenDDS artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: macos-11_0_defaults_java_no-bit_build_artifact
+        path: OpenDDS
+    - name: extract OpenDDS artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        tar xvfJ macos-11_0_defaults_java_no-bit_build.tar.xz
+    - name: check build configuration
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        tools/scripts/show_build_config.pl
     - name: run OpenDDS tests
       shell: bash
       run: |
@@ -2598,6 +2742,7 @@ jobs:
       run: |
         cd OpenDDS/ACE_TAO
         perl -ni.bak -e "print unless /opendds/" ACE/bin/MakeProjectCreator/config/default.features # remove opendds features from here, let individual build configure scripts handle those
+        find -iname "*\.o" | xargs rm
         tar cvf ../../${{ github.job }}.tar ACE/ace/config.h
         git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../../${{ github.job }}.tar
         xz ../../${{ github.job }}.tar
@@ -2607,7 +2752,7 @@ jobs:
         name: ${{ github.job }}_artifact
         path: ${{ github.job }}.tar.xz
 
-  macos-10_15_defaults_security:
+  macos-10_15_defaults_security_build:
 
     runs-on: macos-10.15
 
@@ -2665,6 +2810,78 @@ jobs:
         cd OpenDDS
         . setenv.sh
         make -j4
+    - name: create OpenDDS tar.xz artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        rm -rf ACE_TAO
+        find -iname "*\.o" | xargs rm
+        tar cvf ../${{ github.job }}.tar setenv.sh
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
+        xz ../${{ github.job }}.tar
+    - name: upload OpenDDS artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
+
+  macos-10_15_defaults_security_test:
+
+    runs-on: macos-10.15
+
+    needs: macos-10_15_defaults_security_build
+
+    steps:
+    - name: install xerces-c
+      run: |
+        brew install xerces-c
+    - name: checkout MPC
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/MPC
+        path: MPC
+    - name: checkout autobuild
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/autobuild
+        path: autobuild
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: ace6tao2
+        path: ACE_TAO
+    - name: download ACE_TAO artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: macos-10_15_defaults_ACE_TAO_artifact
+        path: ACE_TAO
+    - name: extract ACE_TAO artifact
+      shell: bash
+      run: |
+        cd ACE_TAO
+        tar xvfJ macos-10_15_defaults_ACE_TAO.tar.xz
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: download OpenDDS artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: macos-10_15_defaults_security_build_artifact
+        path: OpenDDS
+    - name: extract OpenDDS artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        tar xvfJ macos-10_15_defaults_security_build.tar.xz
+    - name: check build configuration
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        tools/scripts/show_build_config.pl
     - name: run OpenDDS tests
       shell: bash
       run: |
@@ -2706,7 +2923,7 @@ jobs:
         cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
         grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
 
-  macos-10_15_defaults_java_no-bit:
+  macos-10_15_defaults_java_no-bit_build:
 
     runs-on: macos-10.15
 
@@ -2791,6 +3008,118 @@ jobs:
         cd OpenDDS
         . setenv.sh
         make -j2 -C tools/modeling/tests
+    - name: run OpenDDS tests
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        mkdir ${{ github.job }}_autobuild_workspace
+        cd ${{ github.job }}_autobuild_workspace
+        echo $GITHUB_SHA > ./SHA
+        cat > config.xml <<EOF
+        <autobuild>
+        <configuration>
+        <variable name="log_file" value="output.log"/>
+        <variable name="log_root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
+        <variable name="project_root" value="$DDS_ROOT"/>
+        <variable name="root" value="$DDS_ROOT/${{ github.job }}_autobuild_workspace"/>
+        <variable name="junit_xml_output" value="Tests"/>
+        </configuration>
+        <command name="log" options="on"/>
+        <command name="print_os_version"/>
+        <command name="print_env_vars"/>
+        <command name="print_ace_config"/>
+        <command name="print_make_version"/>
+        <command name="check_compiler" options="gcc"/>
+        <command name="print_autobuild_config"/>
+        <command name="auto_run_tests" options="dir=$GITHUB_WORKSPACE/OpenDDS -Config RTPS -Config CXX11 -Config RAPIDJSON -Config NO_SHMEM -Config DDS_NO_ORBSVCS -Config NO_BUILT_IN_TOPICS -Config GH_ACTIONS -a -l java/tests/dcps_java_tests.lst -l tools/modeling/tests/modeling_tests.lst"/>
+        <command name="log" options="off"/>
+        <command name="process_logs" options="prettify"/>
+        </autobuild>
+        EOF
+        $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
+    - name: upload autobuild output
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ github.job }}_autobuild_output
+        path: OpenDDS/${{ github.job }}_autobuild_workspace
+    - name: check results
+      shell: bash
+      run: |
+        cat "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+        grep -q 'Failures: 0' "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/latest.txt"
+    - name: create OpenDDS tar.xz artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        rm -rf ACE_TAO
+        find -iname "*\.o" | xargs rm
+        tar cvf ../${{ github.job }}.tar setenv.sh
+        git clean -xdfn | cut -d ' ' -f 3- | xargs tar uvf ../${{ github.job }}.tar
+        xz ../${{ github.job }}.tar
+    - name: upload OpenDDS artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ github.job }}_artifact
+        path: ${{ github.job }}.tar.xz
+
+  macos-10_15_defaults_java_no-bit_test:
+
+    runs-on: macos-10.15
+
+    needs: macos-10_15_defaults_java_no-bit_build
+
+    steps:
+    - name: install xerces-c
+      run: |
+        brew install xerces-c
+    - name: checkout MPC
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/MPC
+        path: MPC
+    - name: checkout autobuild
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/autobuild
+        path: autobuild
+    - name: checkout ACE_TAO
+      uses: actions/checkout@v2.3.4
+      with:
+        repository: DOCGroup/ACE_TAO
+        ref: ace6tao2
+        path: ACE_TAO
+    - name: download ACE_TAO artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: macos-10_15_defaults_ACE_TAO_artifact
+        path: ACE_TAO
+    - name: extract ACE_TAO artifact
+      shell: bash
+      run: |
+        cd ACE_TAO
+        tar xvfJ macos-10_15_defaults_ACE_TAO.tar.xz
+    - name: checkout OpenDDS
+      uses: actions/checkout@v2.3.4
+      with:
+        path: OpenDDS
+        submodules: true
+    - name: download OpenDDS artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: macos-10_15_defaults_java_no-bit_build_artifact
+        path: OpenDDS
+    - name: extract OpenDDS artifact
+      shell: bash
+      run: |
+        cd OpenDDS
+        tar xvfJ macos-10_15_defaults_java_no-bit_build.tar.xz
+    - name: check build configuration
+      shell: bash
+      run: |
+        cd OpenDDS
+        . setenv.sh
+        tools/scripts/show_build_config.pl
     - name: run OpenDDS tests
       shell: bash
       run: |
