@@ -33,22 +33,6 @@ if ($test->flag('disco')) {
   $tc_opts .= " ci_disco --show-worker-logs";
   $is_rtps_disc = 1;
 }
-if ($test->flag('flisco')) {
-  $tc_opts .= " ci_disco --json";
-  $is_rtps_disc = 1;
-}
-if ($test->flag('atisco')) {
-  $tc_opts .= " ci_disco bobcat";
-  $is_rtps_disc = 1;
-}
-if ($test->flag('grisco')) {
-  $tc_opts .= " ci_disco";
-  $is_rtps_disc = 1;
-}
-if ($test->flag('intisco')) {
-  $tc_opts .= " ci_disco fail";
-  $is_rtps_disc = 1;
-}
 elsif ($test->flag('fan')) {
   $tc_opts .= " ci_fan --override-start-time 15 --show-worker-logs";
   $is_rtps_disc = 1;
