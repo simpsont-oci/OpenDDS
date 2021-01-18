@@ -738,7 +738,7 @@ jobs:
         path: OpenDDS
         submodules: true
     - name: configure OpenDDS
-      prun: |
+      run: |
         cd OpenDDS
         ./configure --ipv6 --tests --java=/usr/lib/jvm/adoptopenjdk-8-hotspot-amd64 --no-built-in-topics --rapidjson --ace=$GITHUB_WORKSPACE/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC
     - name: check build configuration
