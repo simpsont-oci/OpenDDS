@@ -33,6 +33,10 @@ if ($test->flag('disco')) {
   $tc_opts .= " ci_disco --show-worker-logs";
   $is_rtps_disc = 1;
 }
+if ($test->flag('lisco')) {
+  $tc_opts .= " ci_disco --show-worker-logs --json";
+  $is_rtps_disc = 1;
+}
 elsif ($test->flag('fan')) {
   $tc_opts .= " ci_fan --override-start-time 15 --show-worker-logs";
   $is_rtps_disc = 1;
