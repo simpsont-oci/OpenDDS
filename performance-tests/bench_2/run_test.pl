@@ -43,6 +43,10 @@ if ($test->flag('disco')) {
   $tc_opts .= " ci_disco";
   $is_rtps_disc = 1;
 }
+if ($test->flag('a')) {
+  $tc_opts .= " ci_disco";
+  $is_rtps_disc = 1;
+}
 elsif ($test->flag('fan')) {
   $tc_opts .= " ci_fan";
   $is_rtps_disc = 1;
