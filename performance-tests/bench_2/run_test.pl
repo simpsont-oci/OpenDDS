@@ -33,7 +33,7 @@ if ($test->flag('disco')) {
   $tc_opts .= " ci_disco --show-worker-logs";
   $is_rtps_disc = 1;
 }
-if ($test->flag('visco')) {
+if ($test->flag('wisco')) {
   $tc_opts .= " ci_disco --show-worker-logs --json";
   $is_rtps_disc = 1;
 }
