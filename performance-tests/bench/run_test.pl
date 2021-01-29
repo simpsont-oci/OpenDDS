@@ -48,7 +48,7 @@ if ($test->flag('disco')) {
   $tc_opts .= " ci_disco";
   $is_rtps_disc = 1;
 }
-elsif ($test->flag('stan')) {
+elsif ($test->flag('fan_01')) {
   $tc_opts .= " ci_fan";
   $is_rtps_disc = 1;
 }
