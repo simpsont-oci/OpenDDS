@@ -26,6 +26,7 @@ public:
     , next_time_()
     , cancel_estimate_()
   {
+    //ACE_DEBUG((LM_DEBUG, "%T (%P|%t) MultiTask::MultiTask() - this = %@, timer_ = %d, delay = (%d, %d), delay_ = (%d, %d), next_time_ = (%d, %d)\n", this, timer_, delay.value().sec(), delay.value().usec(), delay_.value().sec(), delay_.value().usec(), next_time_.value().sec(), next_time_.value().usec()));
     reactor(interceptor->reactor());
   }
 
@@ -36,7 +37,9 @@ public:
     bool worth_passing_along = false;
     {
       ACE_Guard<ACE_Thread_Mutex> guard(mutex_);
-      worth_passing_along = (timer_ == -1) || ((MonotonicTimePoint::now() + delay + cancel_estimate_) < next_time_);
+      const MonotonicTimePoint now = MonotonicTimePoint::now();
+      worth_passing_along = (timer_ == -1) || ((now + delay + cancel_estimate_) < next_time_);
+      //ACE_DEBUG((LM_DEBUG, "%T (%P|%t) MultiTask::enable() - this = %@, wpa = %d, timer_ = %d, now = (%d, %d), delay = (%d, %d), delay_ = (%d, %d), cancel_estimate_ = (%d, %d), next_time_ = (%d, %d)\n", this, worth_passing_along, timer_, now.value().sec(), now.value().usec(), delay.value().sec(), delay.value().usec(), delay_.value().sec(), delay_.value().usec(), cancel_estimate_.value().sec(), cancel_estimate_.value().usec(), next_time_.value().sec(), next_time_.value().usec()));
     }
     if (worth_passing_along) {
       interceptor_->execute_or_enqueue(new ScheduleEnableCommand(this, delay));
@@ -96,6 +99,7 @@ private:
     const MonotonicTimePoint now(tv);
     {
       ACE_Guard<ACE_Thread_Mutex> guard(mutex_);
+      //ACE_DEBUG((LM_DEBUG, "%T (%P|%t) MultiTask::handle_timeout() - this = %@, timer_ = %d, now = (%d, %d), delay_ = (%d, %d), next_time_ = (%d, %d)\n", this, timer_, now.value().sec(), now.value().usec(), delay_.value().sec(), delay_.value().usec(), next_time_.value().sec(), next_time_.value().usec()));
       next_time_ = now + delay_;
     }
     execute(now);

@@ -288,6 +288,7 @@ private:
     }
   };
   typedef OPENDDS_VECTOR(MetaSubmessage) MetaSubmessageVec;
+  typedef OPENDDS_VECTOR(MetaSubmessageVec) MetaSubmessageVecVec;
 
   // RTPS reliability support for local writers:
 
@@ -593,7 +594,7 @@ private:
     IdCountSet nackfrag_counts_;
   };
 
-  void build_meta_submessage_map(MetaSubmessageVec& meta_submessages, AddrDestMetaSubmessageMap& adr_map);
+  void build_meta_submessage_map(MetaSubmessageVecVec& meta_submessages, AddrDestMetaSubmessageMap& adr_map);
   void bundle_mapped_meta_submessages(
     const Encoding& encoding,
     AddrDestMetaSubmessageMap& adr_map,
@@ -603,9 +604,9 @@ private:
                                CountKeeper& counts);
 
   void queue_or_send_submessages(MetaSubmessageVec& meta_submessages);
-  void bundle_and_send_submessages(MetaSubmessageVec& meta_submessages);
+  void bundle_and_send_submessages(MetaSubmessageVecVec& meta_submessages);
 
-  struct SubmessageQueue: RcObject, MetaSubmessageVec {
+  struct SubmessageQueue: RcObject, MetaSubmessageVecVec {
   };
   typedef RcHandle<SubmessageQueue> SubmessageQueue_rch;
 
@@ -671,7 +672,7 @@ private:
       to_call.push_back(rw->second);
     }
     MetaSubmessageVec meta_submessages;
-    for (OPENDDS_VECTOR(RtpsWriter_rch)::const_iterator it = to_call.begin(); it < to_call.end(); ++it) {
+    for (OPENDDS_VECTOR(RtpsWriter_rch)::const_iterator it = to_call.begin(); it != to_call.end(); ++it) {
       RtpsWriter& writer = **it;
       (writer.*func)(submessage, src, meta_submessages);
     }
@@ -708,12 +709,14 @@ private:
       }
     }
     MetaSubmessageVec meta_submessages;
-    for (OPENDDS_VECTOR(RtpsReader_rch)::const_iterator it = to_call.begin(); it < to_call.end(); ++it) {
+    for (OPENDDS_VECTOR(RtpsReader_rch)::const_iterator it = to_call.begin(); it != to_call.end(); ++it) {
       RtpsReader& reader = **it;
       schedule_timer |= (reader.*func)(submessage, src, directed, meta_submessages);
     }
     queue_or_send_submessages(meta_submessages);
     if (schedule_timer) {
+      ACE_Time_Value value = normal_heartbeat_response_delay_.value();
+      ACE_DEBUG((LM_DEBUG, "%T (%P|%t) received(HB) - enabling with (%d, %d)\n", value.sec(), value.usec()));
       heartbeat_reply_.enable(normal_heartbeat_response_delay_);
     }
   }

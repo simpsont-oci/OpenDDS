@@ -41,8 +41,8 @@ ACE_TMAIN(int, ACE_TCHAR*[])
   using namespace OpenDDS::DCPS;
   ReactorTask reactor_task(false);
   reactor_task.open(0);
-  TestObj obj;
   {
+    TestObj obj;
     PmfMultiTask<TestObj> multi(reactor_task.interceptor(), TimeDuration::from_msec(2000), obj, &TestObj::execute);
     obj.multi_ = &multi;
     multi.enable(TimeDuration::from_msec(2000));
@@ -68,6 +68,26 @@ ACE_TMAIN(int, ACE_TCHAR*[])
     ACE_OS::sleep(5);
     ACE_DEBUG((LM_DEBUG, "total_count = %d\n", total_count));
     TEST_CHECK(total_count = prev_total_count + 3);
+    multi.disable_and_wait();
+  }
+
+  total_count = 0;
+
+  {
+    TestObj obj;
+    PmfMultiTask<TestObj> multi(reactor_task.interceptor(), TimeDuration::from_msec(500), obj, &TestObj::execute);
+    obj.multi_ = &multi;
+    ACE_DEBUG((LM_DEBUG, "total_count = %d\n", total_count));
+    TEST_CHECK(total_count == 0);
+    const MonotonicTimePoint deadline = MonotonicTimePoint::now() + TimeDuration::from_msec(1200);
+    size_t enable_calls = 0;
+    while (MonotonicTimePoint::now() < deadline) {
+      ++enable_calls;
+      multi.enable(TimeDuration::from_msec(500));
+      ACE_OS::sleep(ACE_Time_Value(0, 1000));
+    }
+    ACE_DEBUG((LM_DEBUG, "total_count = %d\n", total_count));
+    TEST_CHECK(total_count == 2);
     multi.disable_and_wait();
   }
   reactor_task.stop();
