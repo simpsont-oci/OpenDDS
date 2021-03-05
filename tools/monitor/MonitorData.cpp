@@ -52,6 +52,8 @@ Monitor::MonitorData::getIorList( QList<QString>& iorList)
 bool
 Monitor::MonitorData::setRepoIor( const QString& ior)
 {
+  ACE_DEBUG((LM_DEBUG, "setRepoIor - %C\n", ior.toStdString().c_str()));
+
   if( !this->enabled_) {
     return false;
   }
