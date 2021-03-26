@@ -2861,28 +2861,34 @@ jobs:
         cd OpenDDS/ACE_TAO
         export ACE_COMMIT=$(git rev-parse HEAD)
         echo "ACE_COMMIT=$ACE_COMMIT" >> $GITHUB_ENV
-    - name: Cache Artifact
-      id: cache-artifact
-      uses: actions/cache@v2.1.4
-      with:
-        path: ${{ github.job }}.tar.xz
-        key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
+    #- name: Cache Artifact
+    #  id: cache-artifact
+    #  uses: actions/cache@v2.1.4
+    #  with:
+    #    path: ${{ github.job }}.tar.xz
+    #    key: ${{ github.job }}_ace6tao2_${{ env.ACE_COMMIT }}
     - name: install xerces
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
+    #  if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: sudo apt-get -y install libxerces-c-dev
+    - name: install wireshark
+    #  if: steps.cache-artifact.outputs.cache-hit != 'true'
+      run: sudo apt-get -y install wireshark-dev
+    - name: install qt
+    #  if: steps.cache-artifact.outputs.cache-hit != 'true'
+      run: sudo apt-get -y install qtbase5-dev
     - name: checkout MPC
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
+    #  if: steps.cache-artifact.outputs.cache-hit != 'true'
       uses: actions/checkout@v2.3.4
       with:
         repository: DOCGroup/MPC
         path: MPC
     - name: configure OpenDDS
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
+    #  if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: |
         cd OpenDDS
-        ./configure --tests --security --ace=$GITHUB_WORKSPACE/OpenDDS/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC
+        ./configure --qt --wireshark --tests --security --java --rapidjson --ace=$GITHUB_WORKSPACE/OpenDDS/ACE_TAO/ACE --mpc=$GITHUB_WORKSPACE/MPC
     - name: build ACE and TAO
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
+    #  if: steps.cache-artifact.outputs.cache-hit != 'true'
       run: |
         cd OpenDDS
         . setenv.sh
@@ -2891,7 +2897,7 @@ jobs:
         cd ../TAO
         make -j4
     - name: create ACE_TAO tar.xz artifact
-      if: steps.cache-artifact.outputs.cache-hit != 'true'
+    #  if: steps.cache-artifact.outputs.cache-hit != 'true'
       shell: bash
       run: |
         cd OpenDDS/ACE_TAO
