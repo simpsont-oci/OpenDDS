@@ -3104,7 +3104,7 @@ jobs:
       shell: bash
       run: |
         cd OpenDDS
-        find . -name "core\.*\.*" | xargs -I {} cp {} ${{ github.job }}_autobuild_workspace
+        find . -name "core\.*\.*" | sort -u | xargs -I {} cp {} ${{ github.job }}_autobuild_workspace
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
