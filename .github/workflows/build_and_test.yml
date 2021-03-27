@@ -3069,6 +3069,8 @@ jobs:
     - name: run OpenDDS tests
       shell: bash
       run: |
+        ulimit -c unlimited
+        echo "core.%e.%p" | sudo tee /proc/sys/kernel/core_pattern
         cd OpenDDS
         . setenv.sh
         mkdir ${{ github.job }}_autobuild_workspace
@@ -3098,6 +3100,11 @@ jobs:
         </autobuild>
         EOF
         $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
+    - name: grab core files
+      shell: bash
+      run: |
+        cd OpenDDS
+        find . -name "core\.*\.*" | xargs -I {} cp {} ${{ github.job }}_autobuild_workspace
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
