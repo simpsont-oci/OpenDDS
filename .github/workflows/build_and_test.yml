@@ -3100,11 +3100,6 @@ jobs:
         </autobuild>
         EOF
         $GITHUB_WORKSPACE/autobuild/autobuild.pl "$GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace/config.xml"
-    - name: grab core files
-      shell: bash
-      run: |
-        cd OpenDDS/tools/modeling/tests/MessengerNoPub
-        cp subscriber core\.* $GITHUB_WORKSPACE/OpenDDS/${{ github.job }}_autobuild_workspace
     - name: upload autobuild output
       uses: actions/upload-artifact@v2
       with:
