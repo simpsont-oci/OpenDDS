@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: convictional/trigger-workflow-and-wait@v1.3.0
+    - uses: convictional/trigger-workflow-and-wait@v1.4.0
       with:
         owner: ${{ github.repository_owner }}
         repo: OpenDDS
