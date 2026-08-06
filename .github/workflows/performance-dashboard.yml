@@ -13,6 +13,10 @@ on:
         default: validation
         type: choice
         options: [validation, large-message, fan-diagnostic, service-discovery-diagnostic, standard, core, full]
+      opendds_commit:
+        description: Full OpenDDS commit SHA to test or reuse (manual runs only; defaults to the workflow revision)
+        required: false
+        type: string
       manual_budget_override:
         description: Permit this run above the automatic budget cap
         required: true
@@ -50,18 +54,32 @@ jobs:
       vars.PERFORMANCE_ARTIFACT_BUCKET != '' &&
       (github.event_name == 'workflow_dispatch' || vars.PERFORMANCE_AUTOMATIC_RUNS == 'true')
     runs-on: ubuntu-latest
+    outputs:
+      tested_commit: ${{ steps.revision.outputs.sha }}
     container: amazonlinux:2023
     env:
       ARTIFACT_BUCKET: ${{ vars.PERFORMANCE_ARTIFACT_BUCKET }}
       BUNDLE_VERSION: ${{ vars.PERFORMANCE_BUNDLE_VERSION || 'al2023-xerces-3.2.5-v5' }}
-      OPENDDS_COMMIT: ${{ github.sha }}
     steps:
+      - name: Resolve tested OpenDDS revision
+        id: revision
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REQUESTED_COMMIT: ${{ inputs.opendds_commit }}
+        run: |
+          sha="$GITHUB_SHA"
+          if [[ "$EVENT_NAME" == workflow_dispatch && -n "$REQUESTED_COMMIT" ]]; then
+            sha="$REQUESTED_COMMIT"
+          fi
+          [[ "$sha" =~ ^[0-9a-f]{40}$ ]] || { echo 'opendds_commit must be a full lowercase Git SHA' >&2; exit 2; }
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
       - name: Install build prerequisites
         run: >-
           dnf install -y awscli-2 cmake diffutils findutils gcc gcc-c++ git gzip
           make openssl-devel patch perl tar which
       - uses: actions/checkout@v4
         with:
+          ref: ${{ steps.revision.outputs.sha }}
           submodules: recursive
       - uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -69,6 +87,8 @@ jobs:
           aws-region: ${{ vars.PERFORMANCE_AWS_REGION }}
       - name: Check release bundle
         id: bundle
+        env:
+          OPENDDS_COMMIT: ${{ steps.revision.outputs.sha }}
         run: |
           key="builds/$BUNDLE_VERSION/$OPENDDS_COMMIT/bench.tar.gz"
           if aws s3api head-object --bucket "$ARTIFACT_BUCKET" --key "$key" >/dev/null 2>&1; then
@@ -108,6 +128,8 @@ jobs:
           tar -C /tmp -czf /tmp/bench.tar.gz bundle
       - name: Upload release bundle
         if: steps.bundle.outputs.exists != 'true'
+        env:
+          OPENDDS_COMMIT: ${{ steps.revision.outputs.sha }}
         run: |
           aws s3 cp /tmp/bench.tar.gz \
             "s3://$ARTIFACT_BUCKET/builds/$BUNDLE_VERSION/$OPENDDS_COMMIT/bench.tar.gz"
@@ -184,7 +206,8 @@ jobs:
       - name: Submit benchmark workflow
         env:
           STATE_MACHINE_ARN: ${{ vars.PERFORMANCE_STATE_MACHINE_ARN }}
-          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_SHA: ${{ needs.build-release.outputs.tested_commit }}
+          AUTOMATION_COMMIT: ${{ github.sha }}
           CONFIG_COMMIT: ${{ steps.nightly.outputs.sha }}
           ENVIRONMENT_NAME: ${{ vars.PERFORMANCE_ENVIRONMENT_NAME }}
           SUITE: ${{ steps.suite.outputs.suite }}
@@ -200,6 +223,7 @@ jobs:
           [[ "$ENVIRONMENT_NAME" =~ ^[a-z][a-z0-9-]{0,31}$ ]] || { echo 'PERFORMANCE_ENVIRONMENT_NAME is missing or invalid' >&2; exit 2; }
           input=$(jq -n \
             --arg commitSha "$COMMIT_SHA" \
+            --arg automationCommit "$AUTOMATION_COMMIT" \
             --arg configCommit "$CONFIG_COMMIT" \
             --arg environmentName "$ENVIRONMENT_NAME" \
             --arg suite "$SUITE" \
@@ -213,6 +237,7 @@ jobs:
             --argjson dynamicMulticastRegistration "$DYNAMIC_MULTICAST_REGISTRATION" \
             '{
               commitSha: $commitSha,
+              automationCommit: $automationCommit,
               configCommit: $configCommit,
               environmentName: $environmentName,
               suite: $suite,
