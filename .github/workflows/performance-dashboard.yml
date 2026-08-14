@@ -171,7 +171,7 @@ jobs:
             fan-diagnostic) topology='{"legCount":12,"coresPerLeg":4}'; estimated=3; instance_type="$CORE_INSTANCE_TYPE" ;;
             service-discovery-diagnostic) topology='{"legCount":12,"coresPerLeg":4}'; estimated=3; instance_type="$CORE_INSTANCE_TYPE" ;;
             standard) topology='{"legCount":6,"coresPerLeg":2}'; estimated=2; instance_type="$STANDARD_INSTANCE_TYPE" ;;
-            core) topology='{"legCount":12,"coresPerLeg":4}'; estimated=8; instance_type="$CORE_INSTANCE_TYPE" ;;
+            core) topology='{"legCount":12,"coresPerLeg":4}'; estimated=4; instance_type="$CORE_INSTANCE_TYPE" ;;
             full) topology='{"legCount":30,"coresPerLeg":4}'; estimated=60; instance_type="$FULL_INSTANCE_TYPE" ;;
             *) exit 2 ;;
           esac
