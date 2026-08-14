@@ -110,6 +110,7 @@ jobs:
       - name: Build OpenDDS Bench release bundle
         if: steps.bundle.outputs.exists != 'true'
         run: |
+          export LD_LIBRARY_PATH="/tmp/xerces-install/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
           ./configure --optimize --no-debug --tests --rapidjson --security --xerces3=/tmp/xerces-install
           make -j"$(nproc)" \
             Bench_Worker Bench_node_controller Bench_test_controller \
