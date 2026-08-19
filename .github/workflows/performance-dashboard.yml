@@ -12,7 +12,7 @@ on:
         required: true
         default: validation
         type: choice
-        options: [validation, large-message, fan-diagnostic, service-discovery-diagnostic, standard, core, full]
+        options: [validation, large-message, relay-diagnostic, fan-diagnostic, service-discovery-diagnostic, standard, core, full]
       opendds_commit:
         description: Full OpenDDS commit SHA to test or reuse (manual runs only; defaults to the workflow revision)
         required: false
@@ -157,7 +157,10 @@ jobs:
           FULL_INSTANCE_TYPE: ${{ vars.PERFORMANCE_FULL_INSTANCE_TYPE }}
         run: |
           if [[ "$EVENT_NAME" == schedule ]]; then
-            suite=full
+            # The full suite remains manual until its cost is measured and the
+            # account can supply its 248-vCPU topology.  Weekly coverage uses
+            # the substantially smaller core suite.
+            suite=core
           elif [[ "$EVENT_NAME" == workflow_dispatch ]]; then
             suite="$REQUESTED_SUITE"
           else
@@ -169,6 +172,7 @@ jobs:
           case "$suite" in
             validation) topology='{"legCount":3,"coresPerLeg":1}'; estimated=1; instance_type="$VALIDATION_INSTANCE_TYPE" ;;
             large-message) topology='{"legCount":3,"coresPerLeg":1}'; estimated=1; instance_type="$VALIDATION_INSTANCE_TYPE" ;;
+            relay-diagnostic) topology='{"legCount":3,"coresPerLeg":1}'; estimated=1; instance_type="$VALIDATION_INSTANCE_TYPE" ;;
             fan-diagnostic) topology='{"legCount":12,"coresPerLeg":4}'; estimated=3; instance_type="$CORE_INSTANCE_TYPE" ;;
             service-discovery-diagnostic) topology='{"legCount":12,"coresPerLeg":4}'; estimated=3; instance_type="$CORE_INSTANCE_TYPE" ;;
             standard) topology='{"legCount":6,"coresPerLeg":2}'; estimated=2; instance_type="$STANDARD_INSTANCE_TYPE" ;;
